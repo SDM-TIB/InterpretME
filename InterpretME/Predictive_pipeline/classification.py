@@ -14,6 +14,7 @@ import dtreeviz_lib
 from tqdm import tqdm
 import os,sys
 from pathlib import Path
+from slugify import slugify
 
 PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.parent.joinpath('validating_models').resolve())
 sys.path.append(PACKAGE_VALIDATING_MODELS)
@@ -79,7 +80,7 @@ def lime_interpretation(X_train,new_sampled_data,best_clf,ind_test,X_test,classe
     print("***************** Saving LIME results ***********************")
     with tqdm(total=min(len(ind_test), len(X_test))) as pbar:
         for i, j in zip(ind_test, X_test):
-            explainer.explain_instance(j, best_clf.predict_proba, num_features=10).save_to_file('output/Lime_results/Lime_' + str(i) + '.html')
+            explainer.explain_instance(j, best_clf.predict_proba, num_features=10).save_to_file('output/Lime_results/Lime_' + slugify(str(i)) + '.html')
             exp = explainer.explain_instance(j, best_clf.predict_proba, num_features=10)
             df = pd.DataFrame(exp.as_list())
             df['index'] = i

@@ -5,3 +5,4 @@ svglib
 colour
 graphviz
 dtreeviz
+python-slugify
