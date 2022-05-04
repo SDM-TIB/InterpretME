@@ -42,6 +42,12 @@
             rr:template "http://interpretme.org/entity/{SHACL schema}";
         ]
     ]; 
+    rr:predicateObjectMap [
+        rr:predicate intr:hasSHACLShape;
+        rr:objectMap [ 
+            rr:template "http://interpretme.org/entity/{SHACL shape}";
+        ]
+    ]; 
    rr:predicateObjectMap [
         rr:predicate intr:hasSHACLConstraint;
         rr:objectMap [ 
