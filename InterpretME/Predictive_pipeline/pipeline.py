@@ -225,7 +225,7 @@ def main():
                                        non_applicable_counts=non_applicable_counts)
         plot.save('output/plots/constraints_validation_dtree.svg')
 
-    stats.STATS_COLLECTOR.to_file('times.csv',
+    stats.STATS_COLLECTOR.to_file('files/times.csv',
                                   categories=['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
                                               'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME',
                                               'PIPE_TRAIN_MODEL',
