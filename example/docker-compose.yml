@@ -1,0 +1,67 @@
+version: "3.3"
+services:
+  sdmrdfizer:
+    image: sdmtib/sdmrdfizer:4.4.2
+    container_name: sdmrdfizer
+    volumes:
+      - .:/data
+      - ../InterpretME/mappings:/data/mappings
+    networks:
+      - interpretme
+    depends_on:
+      - interpretmekg
+    environment:
+      - SPARQL_ENDPOINT_IP=interpretmekg
+      - SPARQL_ENDPOINT_USER=dba
+      - SPARQL_ENDPOINT_PASSWD=dba
+      - SPARQL_ENDPOINT_PORT=1111
+      - SPARQL_ENDPOINT_GRAPH=http://interpretme.org
+      - RDF_DUMP_FOLDER_PATH=/database/toLoad
+
+  detrusty:
+    image: sdmtib/detrusty:0.2.0
+    container_name: detrusty
+    ports:
+      - "5000:5000"
+    networks:
+      - interpretme
+    depends_on:
+      - interpretmekg
+      - frenchroyalty
+
+  interpretmekg:
+    image: prohde/virtuoso-opensource-7:7.2.6
+    container_name: interpretmekg
+    volumes:
+      - ./rdf-dump:/database/toLoad
+      - ./interpretmekg:/database
+    ports:
+      - "8891:8890"
+      - "1116:1111"
+    networks:
+      - interpretme
+
+  frenchroyalty:
+    image: prohde/virtuoso-opensource-7:7.2.6
+    container_name: frenchroyalty
+    volumes:
+      - ./data:/database/toLoad
+    ports:
+      - "8892:8890"
+    networks:
+      - interpretme
+
+  interpretme:
+    image: sdmtib/interpretme:latest
+    container_name: interpretme
+    volumes:
+      - ./interpretme/dataset:/InterpretME/dataset
+      - ./interpretme/output:/InterpretME/output
+      - ./interpretme/files:/InterpretME/files
+      - .:/InterpretME/example
+    networks:
+      - interpretme
+
+networks:
+  interpretme:
+    external: false
