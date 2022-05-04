@@ -1,0 +1,17 @@
+{
+	"name": "Spouse",
+	"targetDef": {
+		"query":"SELECT ?x WHERE { ?myspouse dbo:child ?mychild . ?x dbo:child ?mychild .\n\nFILTER (?myspouse != ?x)}",
+		"class": "dbo:Person"
+	},
+	"prefix":{
+		"dbo":"<http://dbpedia.org/ontology/>"
+	},
+	"constraintDef":{
+		"conjunctions":[
+			[
+                { "path": "a", "min": 1 }
+			]
+		]
+	}
+}
