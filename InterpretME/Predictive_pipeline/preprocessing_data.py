@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import sys
 pd.options.mode.chained_assignment = None  # default='warn'
-PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.joinpath('validating_models').resolve())
+PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.parent.joinpath('validating_models').resolve())
 sys.path.append(PACKAGE_VALIDATING_MODELS)
 import validating_models.stats as stats
 sys.path.remove(PACKAGE_VALIDATING_MODELS)

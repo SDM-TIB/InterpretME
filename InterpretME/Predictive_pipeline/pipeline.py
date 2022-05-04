@@ -8,7 +8,7 @@ import classification
 import pandas as pd
 from pathlib import Path
 import sys
-PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.joinpath('validating_models').resolve())
+PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.parent.joinpath('validating_models').resolve())
 sys.path.append(PACKAGE_VALIDATING_MODELS)
 from validating_models.dataset import BaseDataset, ProcessedDataset
 from validating_models.shacl_validation_engine import ReducedTravshaclCommunicator

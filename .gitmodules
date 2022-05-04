@@ -1,0 +1,3 @@
+[submodule "InterpretME/validating_models"]
+	path = InterpretME/validating_models
+	url = git@github.com:JulianLoewe/Validating_Models.git

@@ -15,7 +15,7 @@ from tqdm import tqdm
 import os,sys
 from pathlib import Path
 
-PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.joinpath('validating_models').resolve())
+PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.parent.joinpath('validating_models').resolve())
 sys.path.append(PACKAGE_VALIDATING_MODELS)
 import validating_models.stats as stats
 sys.path.remove(PACKAGE_VALIDATING_MODELS)
