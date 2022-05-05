@@ -21,5 +21,5 @@ Use the following command to execute the first query for the French Royalty data
 curl -X POST -d "query=$(cat queries/french_royalty/Q1.sparql)" -d "sparql1_1=True" localhost:5000/sparql
 ```
 
-For more information about DeTrusty, check its (GitHub repository)[https://github.com/SDM-TIB/DeTrusty].
+For more information about DeTrusty, check its [GitHub repository](https://github.com/SDM-TIB/DeTrusty).
 
