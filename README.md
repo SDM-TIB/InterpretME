@@ -2,7 +2,7 @@
 
 This repository uses submodules, run `git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git` to clone the repository including the submodules.
 
-![InterpretME architecture](https://github.com/SDM-TIB/InterpretME/tree/main/images/architecture.png "InterpretME architecture")
+![InterpretME architecture](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/architecture.png "InterpretME architecture")
 
 InterpretME integrates knowledge graphs with machine learning methods to generate interesting meaningful insights. 
 It helps to generate human and machine readable decisions to provide assistance to users and enhance efficiency.
