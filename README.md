@@ -8,10 +8,11 @@ InterpretME integrates knowledge graphs with machine learning methods to generat
 It helps to generate human and machine readable decisions to provide assistance to users and enhance efficiency.
 InterpretME a tool for fine-grained representations, in a knowledge graph, of the main characteristics of trained machine learning models. 
 
-
-
 ## Building the Docker image
 If you want to build the Docker image yourself instead of pulling it from DockerHub, simply run: `docker build . -t sdmtib/interpretme:latest`
+
+## Example
+For an example on how to use InterpretME and benefit from the traced metadata, check the `example` folder.
 
 ## The InterpretME Ontology
 The ontology used to describe the metadata traced by InterpretMe can be explored in an instance of [WebVOWL](http://ontology.tib.eu/InterpretME/visualization).
