@@ -3,7 +3,7 @@ FROM python:3.8.11-slim-buster
 
 # install dependencies
 COPY requirements.txt /InterpretME/requirements.txt
-COPY InterpretME/Predictive_pipeline/validating_models/requirements.txt /InterpretME/requirements-validating_models.txt
+COPY InterpretME/validating_models/requirements.txt /InterpretME/requirements-validating_models.txt
 RUN apt-get update && \
     apt-get install -y --no-install-recommends graphviz && \
     rm -rf /var/lib/apt/lists/*  && \
