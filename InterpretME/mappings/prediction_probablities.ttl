@@ -89,5 +89,7 @@
         rr:predicate owl:sameAs;
         rr:objectMap [ 
         rml:reference "node"; 
+        rr:termType  rr:IRI
+
         ]   
     ].
