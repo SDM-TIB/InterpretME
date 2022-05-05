@@ -2,14 +2,12 @@
 
 This repository uses submodules, run `git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git` to clone the repository including the submodules.
 
-## The InterpretME Ontology
-The ontology used to describe the metadata traced by InterpretMe can be explored in an instance of (WebVOWL)[http://ontology.tib.eu/InterpretME/visualization].
-
 ## Building the Docker image
 If you want to build the Docker image yourself instead of pulling it from DockerHub, simply run: `docker build . -t sdmtib/interpretme:latest`
 
-
-## Table specifying Classes and its Mapping rules
+## The InterpretME Ontology
+The ontology used to describe the metadata traced by InterpretMe can be explored in an instance of [WebVOWL](http://ontology.tib.eu/InterpretME/visualization).
+The table below describes the number of mapping rules per class.
 | Class | MappingRules | 
 | ------ | ------ | 
 | http://interpretme.org/vocab/SHACLValidation | 8 | 
@@ -28,4 +26,5 @@ If you want to build the Docker image yourself instead of pulling it from Docker
 | http://interpretme.org/vocab/SamplingStrategy | 2 |  
 | http://interpretme.org/vocab/CrossValidation | 2 |  
 | http://interpretme.org/vocab/Endpoint | 2 |  
-| http://interpretme.org/vocab/ImportantFeature | 2 |  
+| http://interpretme.org/vocab/ImportantFeature | 2 | 
+------------------------------------------------------ 
