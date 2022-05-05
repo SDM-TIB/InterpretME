@@ -2,6 +2,14 @@
 
 This repository uses submodules, run `git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git` to clone the repository including the submodules.
 
+![InterpretME architecture](https://github.com/SDM-TIB/InterpretME/tree/main/images/architecture.png "InterpretME architecture")
+
+InterpretME integrates knowledge graphs with machine learning methods to generate interesting meaningful insights. 
+It helps to generate human and machine readable decisions to provide assistance to users and enhance efficiency.
+InterpretME a tool for fine-grained representations, in a knowledge graph, of the main characteristics of trained machine learning models. 
+
+
+
 ## Building the Docker image
 If you want to build the Docker image yourself instead of pulling it from DockerHub, simply run: `docker build . -t sdmtib/interpretme:latest`
 
