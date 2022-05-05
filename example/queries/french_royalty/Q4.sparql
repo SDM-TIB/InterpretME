@@ -1,0 +1,15 @@
+SELECT DISTINCT ?sourceEntity ?SHACLSchema ?SHACLShape ?SHACLConstraint  ?SHACLValidationResult
+WHERE {
+    SERVICE <http://interpretmekg:8890/sparql> {
+        FILTER( ?LIMEentity=<http://interpretme.org/entity/Louis_XIV> )
+        ?entity a <http://interpretme.org/vocab/TargetEntity> .
+        ?entity <http://www.w3.org/2002/07/owl#sameAs> ?sourceEntity .
+        ?entity <http://interpretme.org/vocab/hasEntity> ?LIMEentity .
+        ?entity <http://interpretme.org/vocab/hasSHACLIC> ?SHACLIC .
+        ?SHACLIC <http://interpretme.org/vocab/hasSHACLSchema> ?SHACLSchema .
+        ?SHACLIC <http://interpretme.org/vocab/hasSHACLShape> ?SHACLShape .
+        ?SHACLIC <http://interpretme.org/vocab/hasSHACLConstraint> ?SHACLConstraint .
+        ?SHACLIC <http://interpretme.org/vocab/hasSHACLResult> ?SHACLValidationResult .
+    }
+}
+

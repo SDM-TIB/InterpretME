@@ -1,0 +1,20 @@
+SELECT DISTINCT ?sourceEntity ?InterpretableTool ?feature ?value ?targetClass ?probability
+WHERE {
+    SERVICE <http://interpretmekg:8890/sparql> {
+        FILTER( ?LIMEentity=<$$LIME_ENTITY_ID$$> )
+        ?entity a <http://interpretme.org/vocab/TargetEntity> .
+        ?entity <http://www.w3.org/2002/07/owl#sameAs> ?sourceEntity .
+        ?entity <http://interpretme.org/vocab/hasEntity> ?LIMEentity .
+        ?entity <http://interpretme.org/vocab/hasInterpretedFeature> ?interpretedFeature .
+        ?interpretedFeature  <http://interpretme.org/vocab/hasFeatureWeight> ?featureWeight .
+        ?interpretedFeature <http://www.w3.org/ns/prov#hasGeneratedBy> ?InterpretableTool .
+        ?entity <http://interpretme.org/vocab/hasEntityClassProbability> ?classProb .
+        ?classProb <http://interpretme.org/vocab/hasPredictionProbability> ?probability .
+        ?featureWeight <http://interpretme.org/vocab/hasFeature> ?feature .
+        ?featureWeight <http://interpretme.org/vocab/hasWeight> ?value .
+        ?class <http://interpretme.org/vocab/hasClass> ?targetClass .
+        ?class <http://interpretme.org/vocab/hasPredictionProbability> ?probability .
+        FILTER( regex( ?feature, "$$FEATURE_TO_SELECT$$" ) )
+    }
+}
+

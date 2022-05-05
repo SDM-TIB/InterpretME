@@ -1,0 +1,13 @@
+SELECT DISTINCT ?predicate ?value
+WHERE {
+    SERVICE <http://interpretmekg:8890/sparql> {
+        FILTER( ?LIMEentity=<http://interpretme.org/entity/Louis_XIV> )
+        ?entity a <http://interpretme.org/vocab/TargetEntity> .
+        ?entity <http://www.w3.org/2002/07/owl#sameAs> ?sourceEntity .
+        ?entity <http://interpretme.org/vocab/hasEntity> ?LIMEentity
+    }
+    SERVICE <http://frenchroyalty:8890/sparql> {
+        ?sourceEntity ?predicate ?value
+    }
+}
+
