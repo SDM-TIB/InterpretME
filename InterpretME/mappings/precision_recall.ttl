@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <ModelPrecisionRecall>
-	rml:logicalSource [ rml:source "data/precision_recall.csv";
+	rml:logicalSource [ rml:source "interpretme/files/precision_recall.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

@@ -11,7 +11,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <RunInfo>
-    rml:logicalSource [ rml:source "data/model_accuracy_hyperparameters.csv";
+    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -32,7 +32,7 @@
     ]. 
 
 <ModelDetails>
-	rml:logicalSource [ rml:source "data/model_accuracy_hyperparameters.csv";
+	rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -60,7 +60,7 @@
     ].
 
 <Accuracy>
-    rml:logicalSource [ rml:source "data/model_accuracy_hyperparameters.csv";
+    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -81,7 +81,7 @@
     ].
 
 <HyperparameterSetting>
-    rml:logicalSource [ rml:source "data/model_accuracy_hyperparameters.csv";
+    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

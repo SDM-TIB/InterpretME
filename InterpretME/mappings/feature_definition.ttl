@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <FeatureDefinition>
-	rml:logicalSource [ rml:source "data/feature_definition.csv";
+	rml:logicalSource [ rml:source "interpretme/files/feature_definition.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

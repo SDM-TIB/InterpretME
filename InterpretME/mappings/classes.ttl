@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <PredictionClasses>
-	rml:logicalSource [ rml:source "data/classes.csv";
+	rml:logicalSource [ rml:source "interpretme/files/classes.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

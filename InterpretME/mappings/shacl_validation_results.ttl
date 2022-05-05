@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <SHACLvalidation>
-	rml:logicalSource [ rml:source "data/shacl_validation_results.csv";
+	rml:logicalSource [ rml:source "interpretme/files/shacl_validation_results.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -62,7 +62,7 @@
     ].
 
 <TargetEntitySHACLConstraint>
-    rml:logicalSource [ rml:source "data/shacl_validation_results.csv";
+    rml:logicalSource [ rml:source "interpretme/files/shacl_validation_results.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

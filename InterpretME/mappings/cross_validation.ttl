@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <CrossValidation>
-	rml:logicalSource [ rml:source "data/cross_validation.csv";
+	rml:logicalSource [ rml:source "interpretme/files/cross_validation.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

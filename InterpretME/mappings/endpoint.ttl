@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <InputEndpoint>
-	rml:logicalSource [ rml:source "data/endpoint.csv";
+	rml:logicalSource [ rml:source "interpretme/files/endpoint.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

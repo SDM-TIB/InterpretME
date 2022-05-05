@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <SamplingStrategy>
-	rml:logicalSource [ rml:source "data/sampling_strategy.csv";
+	rml:logicalSource [ rml:source "interpretme/files/sampling_strategy.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [

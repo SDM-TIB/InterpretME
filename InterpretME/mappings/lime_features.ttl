@@ -10,7 +10,7 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <LimeFeatures>
-    rml:logicalSource [ rml:source "data/lime_interpretation_features.csv";
+    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -45,7 +45,7 @@
  
 
 <FeatureWeight>
-    rml:logicalSource [ rml:source "data/lime_interpretation_features.csv";
+    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
     rml:referenceFormulation ql:CSV;
                         ];
 
@@ -82,7 +82,7 @@
     ].
 
  <EntityFeaturesWeights>
-    rml:logicalSource [ rml:source "data/lime_interpretation_features.csv";
+    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
     rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
