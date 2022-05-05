@@ -183,3 +183,10 @@ output/travshacl
 
 .vs/
 .idea/
+
+# data from executing the example
+example/interpretme/
+example/interpretmekg/
+example/mappings
+example/rdf-dump
+
