@@ -4,13 +4,77 @@
 
 ![InterpretME Architecture](/images/architecture.png "InterpretME Architecture")
 
-InterpretME integrates knowledge graphs with machine learning methods to generate interesting meaningful insights. 
+InterpretME integrates knowledge graphs (KG) with machine learning methods to generate interesting meaningful insights. 
 It helps to generate human- and machine-readable decisions to provide assistance to users and enhance efficiency.
-InterpretME is a tool for fine-grained representations, in a knowledge graph, of the main characteristics of trained machine learning models. 
+InterpretME is a tool for fine-grained representations, in a KG, of the main characteristics of trained machine learning models. 
+It receives as input the features' definition, classes and the SHACL constraints from multiple KGs.
+InterpretME takes JSON input from the user as shown below. The features' definition are classified into independent and dependent variables later used in the predicitive models.
+The feature definition has the following format _"x": "?x a <http://dbpedia.org/ontology/Person>. \n ", "gender": "Optional { ?x <http://dbpedia.org/ontology/gender> ?gender.}_ where the first part states the attribute from the KG and the later part describes the definition of that attribute in the KG using SPARQL.
+This definition of features allows InterpretME to trace back the origin of that feature in the KG.
+Given the features' definitions and the target definition, a _SELECT_ SPARQL query is built to retrieve the application domain data. 
+InterpretME also takes constraints as input from the user to check if the enitity validates or invalidates the constraints.
+InterpretME is divided into two main quadrants.
+The first one is "Training interpretable predictive model" and the second is "Documenting interpretable predicitive model".
+In brief, the first quadrant is responsible to perform all the predicitive model pipeline components which include data preparation, applying sampling strategy to the data, building the predicitive model and lastly generating visualization of the predicitive models encompassed with the SHACL constaints.
+The second quadrant "Documenting of interpretable predicitive model" provides assistance to the user by generating the InterpretME KG and executing federated query on top of the InterpretME KG and original KG.
+This inturn helps user to perform data exploration and trace the entity predicted with all the relevant features in the original KG.
+Additionally, different metrics like precision, recall and accuracy along with LIME interpretations are provided to the user.
+
+```json
+{
+    "Endpoint": "http://frenchroyalty:8890/sparql",
+    "Type": "Person",
+    "Index_var": "x",
+    "Independent_variable": {
+      "x": "?x a <http://dbpedia.org/ontology/Person>. \n ",
+      "gender": "Optional { ?x <http://dbpedia.org/ontology/gender> ?gender } .\n ",
+      "childs": "?x <http://dbpedia.org/ontology/numChilds> ?childs . \n ",
+      "predecessors": "?x <http://dbpedia.org/ontology/numPredecessors> ?predecessors . \n",
+      "preds": "?x <http://dbpedia.org/ontology/numPreds> ?preds .\n",
+      "objects": "?x <http://dbpedia.org/ontology/numObjects> ?objects . \n",
+      "subjects": "?x <http://dbpedia.org/ontology/numSubjects> ?subjects . \n"
+    },
+    "Dependent_variable": {
+        "HasSpouse": "{ SELECT ?x, ((?partners > 0) AS ?HasSpouse) WHERE { ?x <http://dbpedia.org/ontology/numSpouses> ?partners . }} \n"
+    },
+    "Constraints": [
+      {
+        "name": "C3",
+        "inverted": false,
+        "shape_schema_dir": "example/shapes/french_royalty/spouse/rule3",
+        "target_shape": "Spouse"
+      },
+      {
+        "name": "C2",
+        "inverted": false,
+        "shape_schema_dir": "example/shapes/french_royalty/spouse/rule2",
+        "target_shape": "Spouse"
+      },
+      {
+        "name": "C1",
+        "inverted": false,
+        "shape_schema_dir": "example/shapes/french_royalty/spouse/rule1",
+        "target_shape": "Spouse"
+      }
+
+    ],
+    "classes": {
+      "NoSpouse": "0",
+      "HasSpouse": "1"
+    },
+    "3_valued_logic": true,
+    "sampling_strategy": "undersampling",
+    "number_important_features": 5,
+    "cross_validation_folds": 5
+}
+```
 
 ## The InterpretME Ontology
-The ontology used to describe the metadata traced by InterpretMe can be explored in an instance of [WebVOWL](http://ontology.tib.eu/InterpretME/visualization).
-The table below describes the number of mapping rules per class.
+The ontology used to describe the metadata traced by InterpretME can be explored in [VoCoL](http://ontology.tib.eu/InterpretME) and [WebProtégé](https://webprotege.stanford.edu/#projects/4dfe5ddb-752e-4dc9-b360-943785f0b0af/edit/Classes) (WebProtégé account required).
+
+![InterpretME Ontology Visualization](/images/ontology_vis.png "InterpretME Ontology Visualization")
+
+The table below describes the number of mapping rules per class. You can find the mappings in `InterpretME/mappings` or query them only in a [public SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-mappings/sparql).
 
 | Class                                                   | MappingRules |
 |---------------------------------------------------------|--------------|
@@ -31,6 +95,37 @@ The table below describes the number of mapping rules per class.
 | http://interpretme.org/vocab/CrossValidation            | 2            |
 | http://interpretme.org/vocab/Endpoint                   | 2            |
 | http://interpretme.org/vocab/ImportantFeature           | 2            |
+
+
+## Experiment Results
+We were running experiments with InterpretME over an extended version of the French Royalty KG [1] (see `example/data`).
+The task was to predict whether a person in the dataset has a spouse.
+We perform under-sampling for this experiment to balance the two classes.
+
+![DT Result](/images/DT_final_results.png "DT Result")
+
+The above figure shows the decision tree for the predictive task over the data.
+
+![DT with Constraint Validation](/images/constraints_validation_dtree.png "DT with Constraint Validation")
+
+Since InterpretME uses SHACL constraints to validate the model, we can also include the validation results in the visualization.
+In this case, the target entities fulfilled all the constraints or the constraints did not apply for the classification.
+
+![Random Forest Feature Importance](/images/Random_Forest_Feature_Importance.png "Random Forest Feature Importance")
+
+The above figure shows the list of relevant features in random forest; most important on top, following features with decreasing importance.
+
+![Target Entity Degree Distribution](/images/DegreeDistribution.png "Target Entity Degree Distribution")
+
+The average number of neighbours in the original KG was 11.39 (std 5.06).
+With the metadata traced by InterpretME, the number increased to 26.99 (std 6.94).
+The increase in the average number of neighbours shows that InterpretME enhances the interpretability of the target entities.
+The original KG is available as a [public SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-og/sparql).
+The original data enhanced with the metadata traced by InterpretME is also publicly available as a [SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-wog/sparql).
+
+**References**
+
+[1] Marco Ribeiro, Sameer Singh, and Carlos Guestrin. "Why Should I Trust You?": Explaining the Predictions of Any Classifier. In: *Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD '16)*. ACM. 2016. DOI: [10.1145/2939672.2939778](https://doi.org/10.1145/2939672.2939778)
 
 ## Running InterpretME
 ### Building InterpretME from Source
