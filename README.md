@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/488505724.svg)](https://zenodo.org/badge/latestdoi/488505724)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # InterpretME
