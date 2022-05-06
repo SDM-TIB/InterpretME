@@ -199,7 +199,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         viz = dtreeviz_lib.dtreeviz(best_clf, new_sampled_data, sampled_target['class'], target_name='class',
                                     feature_names=feature_names, class_names=classes, fancy=True,
                                     show_root_edge_labels=True, bool_feature=bool_feature)
-        viz.save('output/plots/RF_binary_final_results'+str(st)+'.svg')
+        viz.save('output/plots/DT_final_results'+str(st)+'.svg')
         print("****** Decision tree plot saved in output/plot folder *********")
 
     return new_sampled_data, best_clf
