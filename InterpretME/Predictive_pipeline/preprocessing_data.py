@@ -69,7 +69,7 @@ def hot_encode(data, seed_var):
 def load_data(seed_var,independent_var, dependent_var,classes,annotated_dataset):
     print("--------- Preprocessing Data --------------")
     encode_target = define_class(classes, dependent_var, annotated_dataset)
-    ann_data = annotated_dataset.drop(dependent_var,1)
+    ann_data = annotated_dataset.drop(dependent_var,axis=1)
     encode_data = hot_encode(ann_data, seed_var)
     #print(encode_target)
     #encode_data.to_csv('encoded_data.csv')
