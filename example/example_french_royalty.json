@@ -83,6 +83,6 @@
     },
     "3_valued_logic": true,
     "sampling_strategy": "undersampling",
-    "number_important_features": 5,
+    "number_important_features": 15,
     "cross_validation_folds": 5
 }
