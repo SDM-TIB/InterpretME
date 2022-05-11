@@ -205,25 +205,26 @@ def main():
     processed_df.reset_index(inplace=True)
 
     with stats.measure_time('PIPE_CONSTRAINT_VIZ'):
-        processedDataset = ProcessedDataset.from_node_unique_columns(processed_df, base_dataset,
-                                                                     base_columns=[seed_var],
-                                                                     target_name='class', categorical_mapping={
-                'class': {i: classes[i] for i in range(len(classes))}})
-        checker = Checker(clf.predict, processedDataset)
+        if len(constraints) > 0:
+            processedDataset = ProcessedDataset.from_node_unique_columns(processed_df, base_dataset,
+                                                                        base_columns=[seed_var],
+                                                                        target_name='class', categorical_mapping={
+                    'class': {i: classes[i] for i in range(len(classes))}})
+            checker = Checker(clf.predict, processedDataset)
 
-        shadow_tree = get_shadow_tree_from_checker(clf, checker)
+            shadow_tree = get_shadow_tree_from_checker(clf, checker)
 
-        for i, constraint in enumerate(constraints):
-            plot = constraint_viz.dtreeviz(shadow_tree, checker, [constraint], coverage=False,
-                                           non_applicable_counts=non_applicable_counts)
-            plot.save(f'output/plots/constraint{i}_validation_dtree.svg')
-            plot = confusion_matrix_decomposition(shadow_tree, checker, constraint,
-                                                  non_applicable_counts=non_applicable_counts)
-            plot.save(f'output/plots/constraint{i}_validation_matrix.svg')
+            for i, constraint in enumerate(constraints):
+                plot = constraint_viz.dtreeviz(shadow_tree, checker, [constraint], coverage=False,
+                                            non_applicable_counts=non_applicable_counts)
+                plot.save(f'output/plots/constraint{i}_validation_dtree_{st}.svg')
+                plot = confusion_matrix_decomposition(shadow_tree, checker, constraint,
+                                                    non_applicable_counts=non_applicable_counts)
+                plot.save(f'output/plots/constraint{i}_validation_matrix_{st}.svg')
 
-        plot = constraint_viz.dtreeviz(shadow_tree, checker, constraints, coverage=True,
-                                       non_applicable_counts=non_applicable_counts)
-        plot.save('output/plots/constraints_validation_dtree.svg')
+            plot = constraint_viz.dtreeviz(shadow_tree, checker, constraints, coverage=True,
+                                        non_applicable_counts=non_applicable_counts)
+            plot.save(f'output/plots/constraints_validation_dtree_{st}.svg')
 
     stats.STATS_COLLECTOR.to_file('files/times.csv',
                                   categories=['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',

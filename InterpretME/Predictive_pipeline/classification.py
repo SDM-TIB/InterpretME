@@ -174,7 +174,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     lime_interpretation(X_train,new_sampled_data,best_clf,ind_test,X_test,classes,st)
 
     with stats.measure_time('PIPE_OUTPUT'):
-        print("****************** Classification report saved in output folder *************************")
+        print("****************** Classification report saved in files folder *************************")
 
         report = classification_report(y_test, y_pred, target_names=classes, output_dict=True)
         classificationreport = pd.DataFrame(report).transpose()
