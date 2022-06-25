@@ -76,7 +76,8 @@ def read_process(input_file, st):
         features = independent_var + dependent_var
 
         shacl_engine_communicator = ReducedTravshaclCommunicator('', endpoint, 'example/shacl_api_config.json')
-
+        
+        #alignment to the identifiers of the instances
         def hook(results):
             bindings = [{key: value['value'] for key, value in binding.items()}
                         for binding in results['results']['bindings']]
