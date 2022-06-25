@@ -105,6 +105,8 @@ def read_process(input_file, st):
 
         annotated_dataset = annotated_dataset.drop_duplicates()
         annotated_dataset = annotated_dataset.set_index(seed_var)
+        
+        #Can be extended to OpenML 
 
         for k, v in input_data['classes'].items():
             classes.append(v)
