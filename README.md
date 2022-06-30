@@ -1,4 +1,5 @@
 [![DOI](https://zenodo.org/badge/488505724.svg)](https://zenodo.org/badge/latestdoi/488505724)
+[![Docker Image](https://img.shields.io/badge/Docker%20Image-sdmtib/interpretme-blue?logo=Docker)](https://hub.docker.com/r/sdmtib/interpretme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # InterpretME
