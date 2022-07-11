@@ -171,6 +171,8 @@ def read_process(input_file, st):
             df8.to_csv('files/endpoint.csv')
 
     annotated_dataset = annotated_dataset.drop(columns=['node'])
+    num =  len(input_data['Constraints'])
+    annotated_dataset = annotated_dataset.iloc[: , :-num]
 
     return seed_var, independent_var, dependent_var, classes, class_names, strategy, imp_features, cv, annotated_dataset, constraints, base_dataset, st, \
            input_data['3_valued_logic']
