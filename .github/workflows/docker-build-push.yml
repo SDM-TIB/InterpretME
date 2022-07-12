@@ -1,0 +1,28 @@
+# This workflow builds and pushes the Docker image to DockerHub.
+# We do not want the Docker image tag to start with 'v'.
+# So we are using the release name; which should not have a preceding 'v'.
+# The release tag has a preceding 'v'.
+name: docker-build-push
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: sdmtib/interpretme:latest,sdmtib/interpretme:${{ github.event.release.name }}

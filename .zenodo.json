@@ -1,0 +1,34 @@
+{
+  "description": "<p>An interpretable machine learning pipeline over knowledge graphs.<br /><br /><strong>Note:</strong> Due to GitHub not archiving submodules, please, clone the repository.</p><pre><code class=\"language-bash\">git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git</code></pre>",
+  "access_right": "open",
+  "license": "MIT",
+  "upload_type": "software",
+  "creators": [
+    {
+      "affiliation": "TIB Leibniz Information Centre for Science and Technology",
+      "name": "Yashrajsinh Chudasama",
+      "orcid": "0000-0003-3422-366X"
+    },
+    {
+      "affiliation": "Leibniz University of Hannover",
+      "name": "Julian Gercke"
+    },
+    {
+      "affiliation": "TIB Leibniz Information Centre for Science and Technology",
+      "name": "Disha Purohit",
+      "orcid": "0000-0002-1442-335X"
+    },
+    {
+      "affiliation": "TIB Leibniz Information Centre for Science and Technology",
+      "name": "Philipp D. Rohde",
+      "orcid": "0000-0002-9835-4354"
+    }
+  ],
+  "keywords": [
+    "knowledge-graph",
+    "ontologies",
+    "shacl",
+    "interpretability",
+    "machine-learning-models"
+  ]
+}
