@@ -99,11 +99,11 @@ def lime_interpretation(X_train,new_sampled_data,best_clf,ind_test,X_test,classe
 
     df2 = pd.concat(lst_prob)
     df2 = df2.reset_index()
-    df2.rename(columns={df2.columns[0]: "class", df2.columns[1]: "PredictionProbablities"}, inplace=True)
+    df2.rename(columns={df2.columns[0]: "class", df2.columns[1]: "PredictionProbabilities"}, inplace=True)
     df2['tool'] = 'LIME'
     df2.loc[:, 'run_id'] = st
     df2 = df2.set_index('index')
-    df2.to_csv("files/predicition_probablities.csv")
+    df2.to_csv("files/predicition_probabilities.csv")
 
     print("***************************** Lime Interpretability results saved in output folder ****************************")
     return df1

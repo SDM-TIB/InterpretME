@@ -10,11 +10,11 @@
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <Prediction_probablity>
-    rml:logicalSource [ rml:source "interpretme/files/predicition_probablities.csv";
+    rml:logicalSource [ rml:source "interpretme/files/predicition_probabilities.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
-        rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbablities}_{tool}_{run_id}";
+        rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbabilities}_{tool}_{run_id}";
         rr:class intr:PredictionInterpretability
     ];      
     rr:predicateObjectMap [
@@ -32,7 +32,7 @@
  rr:predicateObjectMap [
         rr:predicate intr:hasPredictionProbability;
         rr:objectMap [ 
-            rml:reference "PredictionProbablities";
+            rml:reference "PredictionProbabilities";
             rr:datatype xsd:float
         ]
     ]; 
@@ -50,7 +50,7 @@
     ].
  
  <EntityClassProbability>
-    rml:logicalSource [ rml:source "interpretme/files/predicition_probablities.csv";
+    rml:logicalSource [ rml:source "interpretme/files/predicition_probabilities.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
     rr:subjectMap [
@@ -60,7 +60,7 @@
     rr:predicateObjectMap [
         rr:predicate intr:hasEntityClassProbability;
         rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbablities}_{tool}_{run_id}";
+        rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbabilities}_{tool}_{run_id}";
           
         ]   
     ]. 
