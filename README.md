@@ -1,4 +1,6 @@
 [![DOI](https://zenodo.org/badge/488505724.svg)](https://zenodo.org/badge/latestdoi/488505724)
+[![Docker Image](https://img.shields.io/badge/Docker%20Image-sdmtib/interpretme-blue?logo=Docker)](https://hub.docker.com/r/sdmtib/interpretme)
+[![Latest Release](http://img.shields.io/github/release/SDM-TIB/InterpretME.svg?logo=github)](https://github.com/SDM-TIB/InterpretME/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # InterpretME

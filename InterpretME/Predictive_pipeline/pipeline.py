@@ -76,7 +76,8 @@ def read_process(input_file, st):
         features = independent_var + dependent_var
 
         shacl_engine_communicator = ReducedTravshaclCommunicator('', endpoint, 'example/shacl_api_config.json')
-
+        
+        #alignment to the identifiers of the instances
         def hook(results):
             bindings = [{key: value['value'] for key, value in binding.items()}
                         for binding in results['results']['bindings']]
@@ -105,6 +106,8 @@ def read_process(input_file, st):
 
         annotated_dataset = annotated_dataset.drop_duplicates()
         annotated_dataset = annotated_dataset.set_index(seed_var)
+        
+        #Can be extended to OpenML 
 
         for k, v in input_data['classes'].items():
             classes.append(v)
@@ -168,6 +171,8 @@ def read_process(input_file, st):
             df8.to_csv('files/endpoint.csv')
 
     annotated_dataset = annotated_dataset.drop(columns=['node'])
+    num =  len(input_data['Constraints'])
+    annotated_dataset = annotated_dataset.iloc[: , :-num]
 
     return seed_var, independent_var, dependent_var, classes, class_names, strategy, imp_features, cv, annotated_dataset, constraints, base_dataset, st, \
            input_data['3_valued_logic']
