@@ -1,0 +1,51 @@
+{
+  "Endpoint": "https://example_lungcancer/sparql",
+  "Type": "LungCancer_Patient",
+  "Index_var": "EHR",
+  "Independent_variable": {
+    "EHR": "?EHR1 a <http://LungCancer.eu/vocab/LCPatient>. ?EHR1  <http://LungCancer.eu/vocab/has_LC_SLCG_ID> ?EHR. \n ",
+    "Gender": "?EHR <http://LungCancer.eu/vocab/sex> ?Gender. \n ",
+    "AgeCategory": "?EHR <http://LungCancer.eu/vocab/age> ?Age. bind( if(?Age>50,'OLDER','YOUNGER') as ?AgeCategory ) \n ",
+    "Stages": "OPTIONAL {?EHR <http://LungCancer.eu/vocab/hasDiagnosis> ?o1 . ?o1 <http://LungCancer.eu/vocab/hasDiagnosisStage> ?Stages.}. \n",
+    "Smoking_habits": "?EHR <http://LungCancer.eu/vocab/hasSmokingHabit> ?Smoking_habits.  FILTER (?Smoking_habits NOT IN (<http://LungCancer.eu/entity/UNK>)) . \n",
+    "CancerType": "?EHR <http://LungCancer.eu/vocab/hasFamilyHistory> ?o . ?o <http://LungCancer.eu/vocab/hasFamilyCancerType> ?CancerType . FILTER(!bound(?CancerType) || ?CancerType  IN (<http://LungCancer.eu/entity/Prostate>, <http://LungCancer.eu/entity/Breast>, <http://LungCancer.eu/entity/Lung>, <http://LungCancer.eu/entity/Colorrectal>, <http://LungCancer.eu/entity/Head_and_neck>, <http://LungCancer.eu/entity/Esophagogastric>, <http://LungCancer.eu/entity/Uterus/cervical>, <http://LungCancer.eu/entity/Skin_no_melanoma> ))\n",
+    "FamilyDegree": "?EHR <http://LungCancer.eu/vocab/hasFamilyHistory> ?o . ?o <http://LungCancer.eu/vocab/familyRelationDegree> ?FamilyDegree . FILTER (!bound(?FamilyDegree) || ?FamilyDegree IN (<http://LungCancer.eu/entity/Male_First_Degree>,<http://LungCancer.eu/entity/Female_First_Degree>, <http://LungCancer.eu/entity/Male_Second_Degree>, <http://LungCancer.eu/entity/Female_Second_Degree>, <http://LungCancer.eu/entity/Male_Third_Degree>, <http://LungCancer.eu/entity/Female_Third_Degree>)) \n"
+  },
+  "Dependent_variable": {
+    "Biomarker": "?EHR <http://LungCancer.eu/vocab/hasBio> ?Biomarker ."
+  },
+  "Constraints": [
+    {
+      "name": "Afatinib is not recommended for NSLC EGFR negative (hasDrug)",
+      "inverted": true,
+      "shape_schema_dir": "example/shapes/LungCancer/Afatinib_EGFR_treatmentline_hasDrug",
+      "target_shape": "EGFRNegativePatientInverted"
+    },
+    {
+      "name": "Afatinib is not recommended for NSLC EGFR negative (maintenance)",
+      "inverted": true,
+      "shape_schema_dir": "example/shapes/LungCancer/Afatinib_EGFR_treatmentline_maintenance",
+      "target_shape": "EGFRNegativePatientInverted"
+    },
+    {
+      "name": "Gefitinib is not recommended for NSLC EGFR negative (hasDrug)",
+      "inverted": true,
+      "shape_schema_dir": "example/shapes/LungCancer/Gefitinib_EGFR_treatmentline_hasDrug",
+      "target_shape": "EGFRNegativePatientInverted"
+    },
+    {
+      "name": "Gefitinib is not recommended for NSLC EGFR negative (maintenance)",
+      "inverted": true,
+      "shape_schema_dir": "example/shapes/LungCancer/Gefitinib_EGFR_treatmentline_maintenance",
+      "target_shape": "EGFRNegativePatientInverted"
+    }
+  ],
+  "classes": {
+    "class0": "ALK",
+    "class1": "Others"
+  },
+  "3_valued_logic": false,
+  "sampling_strategy": "undersampling",
+  "number_important_features": 30,
+  "cross_validation_folds": 5
+}
