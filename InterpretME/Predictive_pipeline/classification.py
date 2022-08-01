@@ -281,11 +281,12 @@ def multiclass(sampled_data,sampled_target,imp_features, cv, classes,st):
         report = classification_report(y_test, y_pred, target_names=classes, output_dict=True)
         classificationreport = pd.DataFrame(report).transpose()
         classificationreport.loc[:, 'run_id'] = st
-        report = classificationreport.iloc[:-3, :]
-        if not os.path.isfile('files/precision_recall.csv'):
-            report.to_csv("files/precision_recall.csv", index=False)
-        else:
-            report.to_csv("files/precision_recall.csv", index=False, mode='a', header=False)
+        classificationreport = classificationreport.reset_index()
+        classificationreport = classificationreport.rename(columns={classificationreport.columns[0]:'classes'})
+        print(classificationreport)
+        report = classificationreport.iloc[:-3,:]
+        # print(report)
+        report.to_csv("files/precision_recall.csv", index=False))
 
     with stats.measure_time('PIPE_DTREEVIZ'):
         bool_feature = []
