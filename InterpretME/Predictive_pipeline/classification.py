@@ -207,7 +207,6 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
 
 
 def multiclass(sampled_data,sampled_target,imp_features, cv, classes,st):
-    classes.append('Others')
     sampled_target['class'] = sampled_target['class'].astype(int)
 
     X = sampled_data
@@ -300,7 +299,7 @@ def multiclass(sampled_data,sampled_target,imp_features, cv, classes,st):
         viz = dtreeviz_lib.dtreeviz(best_clf, new_sampled_data, sampled_target['class'], target_name='class',
                                     feature_names=feature_names, class_names=classes, fancy=True,
                                     show_root_edge_labels=True, bool_feature=bool_feature)
-        viz.save('output/plots/RF_multiclass_classification_final_results'+str(st)+'.svg')
+        viz.save('output/plots/DT_multiclass_classification_final_results'+str(st)+'.svg')
         print("****** Decision tree plot saved in output/plot folder *********")
 
     return new_sampled_data, best_clf

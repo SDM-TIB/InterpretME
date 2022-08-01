@@ -31,7 +31,7 @@ def define_class(classes,dependent_var, annotated_dataset):
 
             if (target['class'].isnull().values.any()):
                 n = len(classes)
-                target['class'] = target['class'].replace(np.nan,n)
+                target['class'] = target['class'].replace(np.nan,n-1)
             target = target[['class']]
             # print(target)
     else:
