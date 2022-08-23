@@ -5,7 +5,7 @@
 
 # InterpretME
 
-![InterpretME Architecture](/images/architecture.png "InterpretME Architecture")
+![InterpretME Architecture](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/architecture.png "InterpretME Architecture")
 
 InterpretME integrates knowledge graphs (KG) with machine learning methods to generate interesting meaningful insights. 
 It helps to generate human- and machine-readable decisions to provide assistance to users and enhance efficiency.
@@ -75,7 +75,7 @@ Additionally, different metrics like precision, recall and accuracy along with L
 ## The InterpretME Ontology
 The ontology used to describe the metadata traced by InterpretME can be explored in [VoCoL](http://ontology.tib.eu/InterpretME) and [WebProtégé](https://webprotege.stanford.edu/#projects/4dfe5ddb-752e-4dc9-b360-943785f0b0af/edit/Classes) (WebProtégé account required).
 
-![InterpretME Ontology Visualization](/images/ontology_vis.png "InterpretME Ontology Visualization")
+![InterpretME Ontology Visualization](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/ontology_vis.png "InterpretME Ontology Visualization")
 
 The table below describes the number of mapping rules per class. You can find the mappings in `InterpretME/mappings` or query them only in a [public SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-mappings/sparql).
 
@@ -105,20 +105,20 @@ We were running experiments with InterpretME over an extended version of the Fre
 The task was to predict whether a person in the dataset has a spouse.
 We perform under-sampling for this experiment to balance the two classes.
 
-![DT Result](/images/DT_final_results.png "DT Result")
+![DT Result](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/DT_final_results.png "DT Result")
 
 The above figure shows the decision tree for the predictive task over the data.
 
-![DT with Constraint Validation](/images/constraints_validation_dtree.png "DT with Constraint Validation")
+![DT with Constraint Validation](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/constraints_validation_dtree.png "DT with Constraint Validation")
 
 Since InterpretME uses SHACL constraints to validate the model, we can also include the validation results in the visualization.
 In this case, the target entities fulfilled all the constraints or the constraints did not apply for the classification.
 
-![Random Forest Feature Importance](/images/Random_Forest_Feature_Importance.png "Random Forest Feature Importance")
+![Random Forest Feature Importance](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/Random_Forest_Feature_Importance.png "Random Forest Feature Importance")
 
 The above figure shows the list of relevant features in random forest; most important on top, following features with decreasing importance.
 
-![Target Entity Degree Distribution](/images/DegreeDistribution.png "Target Entity Degree Distribution")
+![Target Entity Degree Distribution](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/DegreeDistribution.png "Target Entity Degree Distribution")
 
 The average number of neighbours in the original KG was 11.39 (std 5.06).
 With the metadata traced by InterpretME, the number increased to 26.99 (std 6.94).
