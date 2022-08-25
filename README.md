@@ -3,6 +3,11 @@
 [![Latest Release](http://img.shields.io/github/release/SDM-TIB/InterpretME.svg?logo=github)](https://github.com/SDM-TIB/InterpretME/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+[![Python Versions](https://img.shields.io/pypi/pyversions/InterpretME)](https://pypi.org/project/InterpretME)
+[![Package Format](https://img.shields.io/pypi/format/InterpretME)](https://pypi.org/project/InterpretME)
+[![Package Status](https://img.shields.io/pypi/status/InterpretME)](https://pypi.org/project/InterpretME)
+[![Package Version](https://img.shields.io/pypi/v/InterpretME)](https://pypi.org/project/InterpretME)
+
 # InterpretME
 
 ![InterpretME Architecture](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/architecture.png "InterpretME Architecture")

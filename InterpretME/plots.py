@@ -4,7 +4,7 @@ import validating_models.visualizations.decision_trees as constraint_viz
 from validating_models.visualizations.classification import confusion_matrix_decomposition
 
 
-def sampling(results,path):
+def sampling(results, path):
     """Sampling strategy plots.
 
     Parameters
@@ -14,23 +14,17 @@ def sampling(results,path):
     path : str
         Path to save plot results.
 
-    Returns
-    -------
-
     """
-
-    print("########################################################################")
-    print("************************* Sampling strategy ****************************")
-    print("########################################################################")
     autopct = "%.2f"
     val = results['sampling']
-    run = results['run_id']
+    file = path + f"/sampling_{results['run_id']}.png"
+    print("Saving sampling strategy plot to", file)
     val.plot.pie(autopct=autopct)
     plt.title("Sampling Strategy")
-    plt.savefig(path+f'/sampling_{run}.png')
+    plt.savefig(file)
 
 
-def feature_importance(results,path):
+def feature_importance(results, path):
     """
 
     Parameters
@@ -40,15 +34,10 @@ def feature_importance(results,path):
     path : str
         Path to save plot results.
 
-    Returns
-    -------
-
     """
-    print("#####################################################################")
-    print("******************* Feature Importance plot *************************")
-    print("#####################################################################")
     fi_df = results['feature_importance']
-    run = results['run_id']
+    file = path + f"/Feature Importance_{results['run_id']}.png"
+    print("Saving feature importance plot to", file)
     # Define size of bar plot
     plt.figure(figsize=(20, 15))
     # Plot Searborn bar chart
@@ -57,7 +46,7 @@ def feature_importance(results,path):
     plt.title('FEATURE IMPORTANCE')
     plt.xlabel('FEATURE IMPORTANCE')
     plt.ylabel('FEATURE NAMES')
-    plt.savefig(path +f'/Feature Importance_{run}.png')
+    plt.savefig(file)
 
 
 def decision_trees(results, path):
@@ -70,16 +59,12 @@ def decision_trees(results, path):
     path : str
         Path to save plot results.
 
-    Returns
-    -------
-
     """
-    print("#####################################################################")
-    print("*********************** Decision Trees ******************************")
-    print("#####################################################################")
+    file = path + f"/Decision_trees_{results['run_id']}.svg"
+    print("Saving decision trees to", file)
     vis = results['dtree']
-    run = results['run_id']
-    vis.save(path+f'/Decision_tree_{run}.svg')
+    vis.save(file)
+
 
 def constraints_decision_trees(results, path, constraint_num):
     """
@@ -93,13 +78,8 @@ def constraints_decision_trees(results, path, constraint_num):
     constraint_num : list
         Number of constraints for saving plots.
 
-    Returns
-    -------
-
     """
-    print("#########################################################################")
-    print("*************************** Constraints Decision Trees ******************")
-    print("##########################################################################")
+    print("Saving constraints decision trees to", path)
     run = results['run_id']
     checker = results['checker']
     shadow_tree = results['shadow_tree']
@@ -121,11 +101,3 @@ def constraints_decision_trees(results, path, constraint_num):
                 plot = constraint_viz.dtreeviz(shadow_tree, checker, constraints, coverage=True,
                                                non_applicable_counts=non_applicable_counts)
                 plot.save(path + f'/constraints_validation_dtree_{run}.svg')
-
-
-
-
-
-
-
-

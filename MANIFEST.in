@@ -1,2 +1,2 @@
-include README.md
+include LIBRARY.md
 include InterpretME/mappings/*.ttl

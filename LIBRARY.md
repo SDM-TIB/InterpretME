@@ -24,10 +24,10 @@ pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_result
 
 `pipeline()` executes the whole pipeline; including extracting data and metadata from the input KGs, validating SHACL constraints, preprocessing the data and running predictive models.
 InterpretME aims at collecting metadata at each step of pipeline.
-The current version of InterpretME resorts to interpretable surrogate tools like `LIME` [1].
+The current version of InterpretME resorts to interpretable surrogate tools like LIME [1].
 The user can provide a path to store the LIME results.
 Even model performance metrics like accuracy, precision etc. are recorded as metadata.
-The RDF mapping language (`RML`) is used to define mappings for the metadata collected from the predictive pipeline in order to integrate them into the **InterpretME KG**.
+The RDF mapping language (RML) is used to define mappings for the metadata collected from the predictive pipeline in order to integrate them into the **InterpretME KG**.
 The RML mappings are used by the SDM-RDFizer [2], an efficient RML engine for creating knowledge graphs, to semantify the metadata.
 The function `pipeline()` returns results from the pipeline which are used later in traceability of a target entity.
 
