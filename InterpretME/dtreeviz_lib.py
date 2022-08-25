@@ -500,8 +500,8 @@ def dtreeviz(tree_model,
              X: np.ndarray = None,
              max_X_features_LR: int = 10,
              max_X_features_TD: int = 20,
-             label_fontsize: int = 12,
-             ticks_fontsize: int = 8,
+             label_fontsize: int = 16,
+             ticks_fontsize: int = 12,
              fontname: str = "Arial",
              colors: dict = None,
              scale=1.0,
@@ -574,9 +574,9 @@ def dtreeviz(tree_model,
             </tr>
             </table>"""
         elif split == '':
-            html = f"""<font face="Helvetica" color="#444443" point-size="12">{name}</font>"""
+            html = f"""<font face="Helvetica" color="#444443" point-size="20">{name}</font>"""
         else:
-            html = f"""<font face="Helvetica" color="#444443" point-size="12">{name}@{split}</font>"""
+            html = f"""<font face="Helvetica" color="#444443" point-size="20">{name}@{split}</font>"""
         if node.id in highlight_path:
             gr_node = f'{node_name} [margin="0" shape=box penwidth=".5" color="{colors["highlight"]}" style="dashed" label=<{html}>]'
         else:
@@ -635,7 +635,7 @@ def dtreeviz(tree_model,
             }}
             """
 
-    def instance_html(path, instance_fontsize: int = 11):
+    def instance_html(path, instance_fontsize: int = 20):
         headers = []
         features_used = [node.feature() for node in path[:-1]]  # don't include leaf
         # print(path)
@@ -719,7 +719,7 @@ def dtreeviz(tree_model,
                 {instance_html(path)}
                 >]
             }}
-            {leaf} -> X_y [dir=back; penwidth="1.2" color="{colors['highlight']}" label=<<font face="Helvetica" color="{colors['leaf_label']}" point-size="{11}">{edge_label}</font>>]
+            {leaf} -> X_y [dir=back; penwidth="1.2" color="{colors['highlight']}" label=<<font face="Helvetica" color="{colors['leaf_label']}" point-size="{20}">{edge_label}</font>>]
             """
 
     def get_internal_nodes():

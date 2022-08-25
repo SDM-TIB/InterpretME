@@ -1,17 +1,29 @@
 import numpy as np
 import pandas as pd
-from pathlib import Path
-import sys
 pd.options.mode.chained_assignment = None  # default='warn'
-PACKAGE_VALIDATING_MODELS = str(Path(__file__).parent.parent.joinpath('validating_models').resolve())
-sys.path.append(PACKAGE_VALIDATING_MODELS)
 import validating_models.stats as stats
-sys.path.remove(PACKAGE_VALIDATING_MODELS)
+
 
 time_preprocessing = stats.get_decorator('PIPE_PREPROCESSING')
 
 def define_class(classes,dependent_var, annotated_dataset):
-    #print(annotated_dataset)
+    """Define classes specified by user in the dataset extracted from knowledge graphs.
+
+    Parameters
+    ----------
+    classes : list
+        List of classes dfined by user in input file.
+    dependent_var : dataframe
+        Target variable column of dataframe.
+    annotated_dataset : dataframe
+        Dataframe extracted from knowledge graph.
+
+    Returns
+    -------
+    dataframe
+
+    """
+
     cls = {}
     target = annotated_dataset[dependent_var]
     #print(target)
@@ -28,12 +40,12 @@ def define_class(classes,dependent_var, annotated_dataset):
             for i,j in enumerate(classes):
                 cls[j]=i
             target['class']= target.iloc[:,0].map(cls)
-
             if (target['class'].isnull().values.any()):
                 n = len(classes)
                 target['class'] = target['class'].replace(np.nan,n-1)
             target = target[['class']]
             # print(target)
+
     else:
         print("Error - less than 2 classes given for classification")
 
@@ -48,7 +60,20 @@ def transform_to_binary(data, attribute, val_a, val_b):
 
 
 def hot_encode(data, seed_var):
-    # del independent_var[0]
+    """One-hot encoding is method of converting data to prepare it for an algorithm and get a better prediction
+
+    Parameters
+    ----------
+    data : dataframe
+        Dataframe on which one-hot encoding needs to be performed.
+    seed_var : str
+        Index variable used to identify the entity.
+
+    Returns
+    -------
+    dataframe
+
+    """
     col_list = []
     count = data.T.apply(lambda x: x.nunique(dropna=False), axis=1)
     #print(count)
@@ -67,12 +92,32 @@ def hot_encode(data, seed_var):
 
 @time_preprocessing
 def load_data(seed_var,independent_var, dependent_var,classes,annotated_dataset):
+    """Preprocessing (one-hot encoding) the dataset extracted from input knowledge graph.
+
+    Parameters
+    ----------
+    seed_var : str
+        Index variable used to identify the entity.
+    independent_var : list
+        List of independent variables from input knowledge graph.
+    dependent_var : str
+        Target variable.
+    classes : list
+        List of classes used for classification.
+    annotated_dataset : dataframe
+        Dataset extracted from input knowledge graph.
+
+    Returns
+    -------
+    (dataframe, dataframe)
+        Returns preprocessed dataset.
+
+    """
     print("--------- Preprocessing Data --------------")
+    print(annotated_dataset)
     encode_target = define_class(classes, dependent_var, annotated_dataset)
     ann_data = annotated_dataset.drop(dependent_var,axis=1)
     encode_data = hot_encode(ann_data, seed_var)
-    #print(encode_target)
-    #encode_data.to_csv('encoded_data.csv')
     return encode_data,encode_target
 
 
