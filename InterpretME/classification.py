@@ -260,7 +260,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
             for f in range(important_features_size):
                 important_features.add(X.columns.values[indices[f]])
 
-    data = plot_feature_importance(estimator.feature_importances_, X.columns, model, st)
+    data = plot_feature_importance(estimator.feature_importances_, X.columns)
     results['feature_importance'] = data
 
     # Taking important features
@@ -401,7 +401,7 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
             for f in range(important_features_size):
                 important_features.add(X.columns.values[indices[f]])
 
-    data = plot_feature_importance(estimator.feature_importances_, X.columns, model, st)
+    data = plot_feature_importance(estimator.feature_importances_, X.columns)
     results['feature_importance'] = data
 
     # Taking important features
