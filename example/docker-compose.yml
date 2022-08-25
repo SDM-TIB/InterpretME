@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   sdmrdfizer:
-    image: sdmtib/sdmrdfizer:4.4.2
+    image: sdmtib/sdmrdfizer:4.4.4
     container_name: sdmrdfizer
     volumes:
       - .:/data
@@ -19,7 +19,7 @@ services:
       - RDF_DUMP_FOLDER_PATH=/database/toLoad
 
   detrusty:
-    image: sdmtib/detrusty:0.2.0
+    image: sdmtib/detrusty:0.6.1
     container_name: detrusty
     ports:
       - "5000:5000"

@@ -1,5 +1,5 @@
 {
-  "description": "<p>An interpretable machine learning pipeline over knowledge graphs.<br /><br /><strong>Note:</strong> Due to GitHub not archiving submodules, please, clone the repository.</p><pre><code class=\"language-bash\">git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git</code></pre>",
+  "description": "An interpretable machine learning pipeline over knowledge graphs.",
   "access_right": "open",
   "license": "MIT",
   "upload_type": "software",

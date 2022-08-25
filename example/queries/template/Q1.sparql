@@ -10,10 +10,9 @@ WHERE {
         ?interpretedFeature <http://www.w3.org/ns/prov#hasGeneratedBy> ?InterpretableTool .
         ?entity <http://interpretme.org/vocab/hasEntityClassProbability> ?classProb .
         ?classProb <http://interpretme.org/vocab/hasPredictionProbability> ?probability .
+        ?classProb <http://interpretme.org/vocab/hasClass> ?targetClass .
         ?featureWeight <http://interpretme.org/vocab/hasFeature> ?feature .
         ?featureWeight <http://interpretme.org/vocab/hasWeight> ?value .
-        ?class <http://interpretme.org/vocab/hasClass> ?targetClass .
-        ?class <http://interpretme.org/vocab/hasPredictionProbability> ?probability .
     }
 }
 
