@@ -132,12 +132,7 @@ The original data enhanced with the metadata traced by InterpretME is also publi
 
 ## Running InterpretME
 ### Building InterpretME from Source
-This repository uses submodules, please execute the following command to ensure all source files are cloned:
-```bash
-git clone --recurse-submodules git@github.com:SDM-TIB/InterpretME.git
-```
-
-After cloning the repository and changing into the repository directory, you can build the Docker image
+Clone the repository and chang into the repository directory, you can then build the Docker image:
 ```bash
 docker build . -t sdmtib/interpretme:latest
 ```
@@ -145,8 +140,9 @@ docker build . -t sdmtib/interpretme:latest
 Follow the instructions in the `example` directory for further information on how to proceed.
 
 ### Using existing Resources
-If you are not interested in building InterpretME from source, you can simply follow the instruction in the `example` directory.
+If you are not interested in building InterpretME from source, you can simply follow the instructions in the `example` directory.
 All steps necessary to run the pipeline, upload the data to a SPARQL endpoint, and query the InterpretME KG are described there.
+Additionally, there is an iPython notebook in the `example` folder that demonstrates the use of the InterpretME library.
 
 ## License
 This work is licensed under the MIT license.
