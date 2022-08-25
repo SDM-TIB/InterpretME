@@ -11,16 +11,16 @@ InterpretME integrates knowledge graphs (KG) with machine learning methods to ge
 It helps to generate human- and machine-readable decisions to provide assistance to users and enhance efficiency.
 InterpretME is a tool for fine-grained representations, in a KG, of the main characteristics of trained machine learning models. 
 It receives as input the features' definition, classes and the SHACL constraints from multiple KGs.
-InterpretME takes JSON input from the user as shown below. The features' definition are classified into independent and dependent variables later used in the predicitive models.
+InterpretME takes JSON input from the user as shown below. The features' definition are classified into independent and dependent variables later used in the predictive models.
 The feature definition has the following format _"x": "?x a <http://dbpedia.org/ontology/Person>. \n ", "gender": "Optional { ?x <http://dbpedia.org/ontology/gender> ?gender.}_ where the first part states the attribute from the KG and the later part describes the definition of that attribute in the KG using SPARQL.
 This definition of features allows InterpretME to trace back the origin of that feature in the KG.
 Given the features' definitions and the target definition, a _SELECT_ SPARQL query is built to retrieve the application domain data. 
-InterpretME also takes constraints as input from the user to check if the enitity validates or invalidates the constraints.
+InterpretME also takes constraints as input from the user to check if the entity validates or invalidates the constraints.
 InterpretME is divided into two main quadrants.
-The first one is "Training interpretable predictive model" and the second is "Documenting interpretable predicitive model".
-In brief, the first quadrant is responsible to perform all the predicitive model pipeline components which include data preparation, applying sampling strategy to the data, building the predicitive model and lastly generating visualization of the predicitive models encompassed with the SHACL constaints.
-The second quadrant "Documenting of interpretable predicitive model" provides assistance to the user by generating the InterpretME KG and executing federated query on top of the InterpretME KG and original KG.
-This inturn helps user to perform data exploration and trace the entity predicted with all the relevant features in the original KG.
+The first one is "Training interpretable predictive model" and the second is "Documenting interpretable predictive model".
+In brief, the first quadrant is responsible to perform all the predictive model pipeline components which include data preparation, applying sampling strategy to the data, building the predictive model and lastly generating visualization of the predictive models encompassed with the SHACL constraints.
+The second quadrant "Documenting of interpretable predictive model" provides assistance to the user by generating the InterpretME KG and executing federated query on top of the InterpretME KG and original KG.
+This, in turn, helps user to perform data exploration and trace the entity predicted with all the relevant features in the original KG.
 Additionally, different metrics like precision, recall and accuracy along with LIME interpretations are provided to the user.
 
 ```json
