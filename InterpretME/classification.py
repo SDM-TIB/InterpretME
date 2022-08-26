@@ -40,8 +40,8 @@ time_lime = stats.get_decorator('PIPE_LIME')
 time_output = stats.get_decorator('PIPE_OUTPUT')
 
 
-def classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, train_test_split, model,
-             results):
+def classify(sampled_data, sampled_target, imp_features, cv, classes,
+             st, lime_results, train_test_split, model, results):
     """Selecting classification strategy based on the number of classes provided by the user.
 
     Parameters
@@ -55,7 +55,7 @@ def classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_r
     cv : int
         Number of cross validation splits required while performing stratified shuffle split.
     classes : list
-        List of classes used for classification.
+        A list of classes used for classification.
     st : int
         Unique identifier.
     lime_results : str
@@ -72,13 +72,12 @@ def classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_r
     (dataframe, model, dict)
 
     """
-    if (len(classes) == 2):
+    if len(classes) == 2:
         new_sampled_data, clf, results = binary_classification(sampled_data, sampled_target, imp_features, cv, classes,
                                                                st, lime_results, train_test_split, model, results)
     else:
         new_sampled_data, clf, results = multiclass(sampled_data, sampled_target, imp_features, cv, classes, st,
                                                     lime_results, train_test_split, model, results)
-
     return new_sampled_data, clf, results
 
 
@@ -120,7 +119,7 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     X_train : array
         Training dataset used to generate LIME interpretation.
     new_sampled_data : dataframe
-        Preporcessed dataset.
+        Preprocessed dataset.
     best_clf : model
         Best model saved after applying Decision tree.
     ind_test : index
@@ -128,7 +127,7 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     X_test : array
         Testing dataset used to generate LIME interpretation.
     classes : list
-        List of classes for classification.
+        A list of classes for classification.
     st : int
         Unique identifier.
     lime_results : str
@@ -139,18 +138,21 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     dataframe
 
     """
-    explainer = lime.lime_tabular.LimeTabularExplainer(np.array(X_train),
-                                                       feature_names=new_sampled_data.columns.values,
-                                                       class_names=classes, discretize_continuous=True,
-                                                       random_state=123)
+    explainer = lime.lime_tabular.LimeTabularExplainer(
+        np.array(X_train),
+        feature_names=new_sampled_data.columns.values,
+        class_names=classes,
+        discretize_continuous=True,
+        random_state=123
+    )
 
     lst = []
     lst_prob = []
 
     if lime_results is None:
-        print("##############################################################################")
-        print("********* LIME results will not be saved as the path is not specified*********")
-        print("##############################################################################")
+        print("###############################################################################")
+        print("********* LIME results will not be saved as the path is not specified *********")
+        print("###############################################################################")
     else:
         if not os.path.exists(lime_results):
             os.makedirs(lime_results)
@@ -160,10 +162,10 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
         with tqdm(total=min(len(ind_test), len(X_test))) as pbar:
             for i, j in zip(ind_test, X_test):
                 explainer.explain_instance(j, best_clf.predict_proba, num_features=10).save_to_file(
-                    lime_results + '/Lime_' + slugify(str(i)) + '.html')
+                    lime_results + '/Lime_' + slugify(str(i)) + '.html'
+                )
                 pbar.update(1)
 
-    # with tqdm(total=min(len(ind_test), len(X_test))) as pbar:
     for i, j in zip(ind_test, X_test):
         exp = explainer.explain_instance(j, best_clf.predict_proba, num_features=10)
         df = pd.DataFrame(exp.as_list())
@@ -172,7 +174,6 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
         df2 = pd.DataFrame(exp.predict_proba.tolist())
         df2['index'] = i
         lst_prob.append(df2)
-        # pbar.update(1)
 
     df1 = pd.concat(lst)
     df1.loc[:, 'run_id'] = st
@@ -189,12 +190,11 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     df2 = df2.set_index('index')
     df2.to_csv("interpretme/files/predicition_probabilities.csv")
 
-    # print("***************************** Lime Interpretability results saved in output folder ****************************")
     return df1
 
 
-def binary_classification(sampled_data, sampled_target, imp_features, cross_validation, classes, st, lime_results,
-                          test_split, model, results):
+def binary_classification(sampled_data, sampled_target, imp_features, cross_validation,
+                          classes, st, lime_results, test_split, model, results):
     """Binary classification technique.
 
     Parameters
@@ -208,7 +208,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     cross_validation : int
         Number of cross validation splits required by user.
     classes : list
-        List of classes used for classification.
+        A list of classes used for classification.
     st : int
         Unique indentifier.
     lime_results : str
@@ -229,17 +229,17 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     X = sampled_data
     y = sampled_target['class']
 
-    X_imput, y_imput = X.values, y.values
+    X_input, y_input = X.values, y.values
     with stats.measure_time('PIPE_IMPORTANT_FEATURES'):
         # print("---------------- Random Forest Classification with Stratified shuffle split -----------------------")
         # print(model)
-        if (model == 'Random Forest'):
+        if model == 'Random Forest':
             print('Random Forest Classifier')
             estimator = RandomForestClassifier(max_depth=4, random_state=0)
-        elif (model == 'AdaBoost'):
+        elif model == 'AdaBoost':
             print('AdaBoost Classifier')
             estimator = AdaBoostClassifier(random_state=0)
-        elif (model == 'Gradient Boosting'):
+        elif model == 'Gradient Boosting':
             print('Gradient Boosting Classifier')
             estimator = GradientBoostingClassifier(random_state=0)
 
@@ -249,11 +249,11 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         print("###########################################################################")
         print("************** Classification report for every iteration ******************")
         print("###########################################################################")
-        for i, (train, test) in enumerate(cv.split(X_imput, y_imput)):
-            estimator.fit(X_imput[train], y_imput[train])
-            y_predicted = estimator.predict(X_imput[test])
+        for i, (train, test) in enumerate(cv.split(X_input, y_input)):
+            estimator.fit(X_input[train], y_input[train])
+            y_predicted = estimator.predict(X_input[test])
 
-            print(classification_report(y_imput[test], y_predicted))
+            print(classification_report(y_input[test], y_predicted))
 
             fea_importance = estimator.feature_importances_
             indices = np.argsort(fea_importance)[::-1]
@@ -267,9 +267,9 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     new_sampled_data = sampled_data[list(important_features)]
     indices = new_sampled_data.index.values
     # print(indices)
-    X_train, X_test, y_train, y_test, ind_train, ind_test = train_test_split(new_sampled_data.values,
-                                                                             sampled_target['class'].values, indices,
-                                                                             random_state=123)
+    X_train, X_test, y_train, y_test, ind_train, ind_test = train_test_split(
+        new_sampled_data.values, sampled_target['class'].values, indices, random_state=123
+    )
 
     feature_names = new_sampled_data.columns
     parameters = {"max_depth": range(4, 6)}
@@ -277,7 +277,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         # Defining Decision tree Classifier
         clf = tree.DecisionTreeClassifier()
 
-        # GrdiSearchCV to select best hyperparameters
+        # GridSearchCV to select best hyperparameters
         grid = GridSearchCV(estimator=clf, param_grid=parameters)
         grid_res = grid.fit(X_train, y_train)
         best_clf = grid_res.best_estimator_
@@ -328,14 +328,14 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         viz = dtreeviz_lib.dtreeviz(best_clf, new_sampled_data, sampled_target['class'], target_name='class',
                                     feature_names=feature_names, class_names=classes, fancy=True,
                                     show_root_edge_labels=True, bool_feature=bool_feature)
-
         results['dtree'] = viz
 
     return new_sampled_data, best_clf, results
 
 
-def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model,
-               results):
+# TODO: parameter test_split is unused
+def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
+               st, lime_results, test_split, model, results):
     """Multiclass classification technique
 
     Parameters
@@ -349,7 +349,7 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
     cv : int
         Number of cross validation splits required by user.
     classes : list
-        List of classes used for classification.
+        A list of classes used for classification.
     st : int
         Unique identifier.
     lime_results : str
@@ -371,16 +371,16 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
     X = sampled_data
     y = sampled_target['class']
 
-    X_imput, y_imput = X.values, y.values
+    X_input, y_input = X.values, y.values
     with stats.measure_time('PIPE_IMPORTANT_FEATURES'):
         # print("---------------- Random Forest Classification with Stratified shuffle split -----------------------")
-        if (model == 'Random Forest'):
+        if model == 'Random Forest':
             print('Random Forest Classifier')
             estimator = RandomForestClassifier(max_depth=4, random_state=0)
-        elif (model == 'AdaBoost'):
+        elif model == 'AdaBoost':
             print('AdaBoost Classifier')
             estimator = AdaBoostClassifier(random_state=0)
-        elif (model == 'Gradient Boosting'):
+        elif model == 'Gradient Boosting':
             print('Gradient Boosting Classifier')
             estimator = GradientBoostingClassifier(random_state=0)
 
@@ -390,11 +390,11 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
         print("#################################################################################")
         print("************** Classification report for every iteration ************************")
         print("#################################################################################")
-        for i, (train, test) in enumerate(cv.split(X_imput, y_imput)):
-            estimator.fit(X_imput[train], y_imput[train])
-            y_predicted = estimator.predict(X_imput[test])
+        for i, (train, test) in enumerate(cv.split(X_input, y_input)):
+            estimator.fit(X_input[train], y_input[train])
+            y_predicted = estimator.predict(X_input[test])
 
-            print(classification_report(y_imput[test], y_predicted))
+            print(classification_report(y_input[test], y_predicted))
 
             fea_importance = estimator.feature_importances_
             indices = np.argsort(fea_importance)[::-1]
@@ -408,23 +408,21 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
     new_sampled_data = sampled_data[list(important_features)]
     indices = new_sampled_data.index.values
     # print(indices)
-    X_train, X_test, y_train, y_test, ind_train, ind_test = train_test_split(new_sampled_data.values,
-                                                                             sampled_target['class'].values,
-                                                                             indices, random_state=123)
+    X_train, X_test, y_train, y_test, ind_train, ind_test = train_test_split(
+        new_sampled_data.values, sampled_target['class'].values, indices, random_state=123
+    )
 
     feature_names = new_sampled_data.columns
     parameters = {"max_depth": 3}
-    # range(1,3)
     # Defining Decision tree Classifier
     with stats.measure_time('PIPE_TRAIN_MODEL'):
         clf = tree.DecisionTreeClassifier()
 
-        # GrdiSearchCV to select best hyperparameters
+        # GridSearchCV to select best hyperparameters
         grid = GridSearchCV(estimator=clf, param_grid=parameters)
         grid_res = grid.fit(X_train, y_train)
         best_clf = grid_res.best_estimator_
 
-    # predictions = (clf.fit(X_train, y_train)).predict(X_test)
     with stats.measure_time('PIPE_OUTPUT'):
         acc = best_clf.score(X_test, y_test)
         y_pred = best_clf.predict(X_test)
@@ -460,7 +458,6 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
         classificationreport = classificationreport.rename(columns={classificationreport.columns[0]: 'classes'})
         print(classificationreport)
         report = classificationreport.iloc[:-3, :]
-        # print(report)
         report.to_csv("interpretme/files/precision_recall.csv", index=False)
 
     with stats.measure_time('PIPE_DTREEVIZ'):
@@ -475,7 +472,6 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes, st, lime
         viz = dtreeviz_lib.dtreeviz(best_clf, new_sampled_data, sampled_target['class'], target_name='class',
                                     feature_names=feature_names, class_names=classes, fancy=True,
                                     show_root_edge_labels=True, bool_feature=bool_feature)
-
         results['dtree'] = viz
 
     return new_sampled_data, best_clf, results

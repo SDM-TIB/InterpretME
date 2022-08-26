@@ -1,9 +1,9 @@
 import requests
 from requests.auth import HTTPBasicAuth
-import time
 import validating_models.stats as stats
 
 uploading = stats.get_decorator('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO')
+
 
 @uploading
 def upload_to_virtuoso(run_id, rdf_file, server_url, username, password):
@@ -40,5 +40,3 @@ def upload_to_virtuoso(run_id, rdf_file, server_url, username, password):
         )
         if r.status_code != 201:
             raise Exception('Something went wrong!' + str(r.status_code))
-
-

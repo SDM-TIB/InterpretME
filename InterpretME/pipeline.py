@@ -22,8 +22,8 @@ def constraint_md5_sum(constraint):
 
     Parameters
     ----------
-    constraint : list
-        List of constarints needs to be checked.
+    constraint : ShaclSchemaConstraint
+        List of constraints needs to be checked.
     Returns
     -------
     hash value
@@ -43,8 +43,9 @@ def constraint_md5_sum(constraint):
 def read(input_file, st):
     """Reads from the input knowledge graphs and extracts data.
 
-    Extracting features and its definition from the input knowledge graphs using sparqlQuery and applying SHACL constraints on the input knowledge graphs to identify valid and invalid entities
-    in the input knowledge graphs.
+    Extracting features and its definition from the input knowledge graphs using sparqlQuery
+    and applying SHACL constraints on the input knowledge graphs to identify valid and invalid
+    entities in the input knowledge graphs.
 
     Parameters
     ----------
@@ -55,14 +56,12 @@ def read(input_file, st):
 
     Returns
     -------
-    (str, List, List, List, List, Dataframe, List, Dataframe, int, input_data['3_valued_logic'] )
+    (str, list, list, list, list, Dataframe, list, Dataframe, int, input_data['3_valued_logic'] )
         Annotated dataset with SHACL results and class information given by the user.
 
     """
-
     with open(input_file, "r") as input_file_descriptor:
         input_data = json.load(input_file_descriptor)
-        # print(input_data)
 
         endpoint = input_data['Endpoint']
         seed_var = input_data['Index_var']
@@ -116,13 +115,15 @@ def read(input_file, st):
         constraint_identifiers = [constraint_md5_sum(constraint) for constraint in constraints]
 
         with stats.measure_time('PIPE_SHACL_VALIDATION'):
-            shacl_validation_results = base_dataset.get_shacl_schema_validation_results(constraints,
-                                                                                        rename_columns=True,
-                                                                                        replace_non_applicable_nans=True)
+            shacl_validation_results = base_dataset.get_shacl_schema_validation_results(
+                constraints, rename_columns=True, replace_non_applicable_nans=True
+            )
 
         sample_to_node_mapping = base_dataset.get_sample_to_node_mapping().rename('node')
 
-        annotated_dataset = pd.concat((base_dataset.df, shacl_validation_results, sample_to_node_mapping),axis='columns')
+        annotated_dataset = pd.concat(
+            (base_dataset.df, shacl_validation_results, sample_to_node_mapping), axis='columns'
+        )
 
         annotated_dataset = annotated_dataset.drop_duplicates()
         annotated_dataset = annotated_dataset.set_index(seed_var)
@@ -142,7 +143,6 @@ def read(input_file, st):
             df2 = df2.set_index('run_id')
             df2.to_csv('interpretme/files/classes.csv')
 
-
             dfs_shacl_results = []
 
             for constraint, identifier in zip(constraints, constraint_identifiers):
@@ -157,7 +157,9 @@ def read(input_file, st):
                 df6 = df6.reset_index()
                 df6 = df6.rename(columns={df6.columns[0]: 'index'})
                 dfs_shacl_results.append(df6)
-                pd.concat(dfs_shacl_results, axis='rows').to_csv('interpretme/files/shacl_validation_results.csv', index=False)
+                pd.concat(dfs_shacl_results, axis='rows').to_csv(
+                    'interpretme/files/shacl_validation_results.csv', index=False
+                )
 
             df7 = pd.DataFrame(annotated_dataset.loc[:, ['node']])
             df7['run_id'] = st
@@ -183,11 +185,12 @@ def current_milli_time():
     return round(time.time() * 1000)
 
 
-def pipeline(path_config, sampling, cv, imp_features, test_split, model,lime_results):
+def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_results):
     """Executing InterpretME pipeline.
 
-    InterpretME pipeline is the important function which helps executes all the main components of InterpretME including extraction of data from input knowledge graphs,
-    preprocessing data, applying sampling strategy if specified by user, and generating machine learning model outputs.
+    InterpretME pipeline is the important function which helps executes all the main components of
+    InterpretME including extraction of data from input knowledge graphs, preprocessing data,
+    applying sampling strategy if specified by user, and generating machine learning model outputs.
 
     Parameters
     ----------
@@ -202,15 +205,14 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model,lime_res
     Returns
     -------
     dict
-        Pipeline function will return a dictionary with all the results stored as objects which can be used for further analysis.
+        Pipeline function will return a dictionary with all the results stored as
+        objects which can be used for further analysis.
 
     """
-
     st = current_milli_time()
     print(st)
 
-    results = {}
-    results['run_id'] = st
+    results = {'run_id': st}
 
     if not os.path.exists('interpretme/files'):
         os.makedirs('interpretme/files')
@@ -236,23 +238,24 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model,lime_res
 
     seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts = read(path_config, st)
 
-
     with stats.measure_time('PIPE_PREPROCESSING'):
-        encoded_data, encode_target = preprocessing_data.load_data(seed_var, independent_var, dependent_var, classes,annotated_dataset)
+        encoded_data, encode_target = preprocessing_data.load_data(seed_var, independent_var, dependent_var, classes, annotated_dataset)
 
     with stats.measure_time('PIPE_SAMPLING'):
         sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target, sampling, results)
-
 
     new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results)
     processed_df = pd.concat((new_sampled_data, sampled_target), axis='columns')
     processed_df.reset_index(inplace=True)
 
-
     with stats.measure_time('PIPE_CONSTRAINT_VIZ'):
-        processedDataset = ProcessedDataset.from_node_unique_columns(processed_df, base_dataset,
-                                                                     base_columns=[seed_var],
-                                                                     target_name='class', categorical_mapping={'class': {i: classes[i] for i in range(len(classes))}})
+        processedDataset = ProcessedDataset.from_node_unique_columns(
+            processed_df,
+            base_dataset,
+            base_columns=[seed_var],
+            target_name='class',
+            categorical_mapping={'class': {i: classes[i] for i in range(len(classes))}}
+        )
         checker = Checker(clf.predict, processedDataset)
 
         shadow_tree = get_shadow_tree_from_checker(clf, checker)
@@ -270,13 +273,17 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model,lime_res
                            server_url='http://localhost:8891/',
                            username='dba', password='dba')
 
-
-
-    stats.STATS_COLLECTOR.to_file('times.csv', categories=['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
-                                              'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME',
-                                              'PIPE_TRAIN_MODEL','PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join','PIPE_InterpretMEKG_SEMANTIFICATION', 'PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'])
+    stats.STATS_COLLECTOR.to_file(
+        'times.csv',
+        categories=['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
+                    'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_TRAIN_MODEL',
+                    'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join',
+                    'PIPE_InterpretMEKG_SEMANTIFICATION', 'PIPE_InterpretMEKG_UPLOAD_VIRTUOSO']
+    )
 
     return results
 
+
 if __name__ == '__main__':
-    pipeline('./example/example_french_royalty.json', 'undersampling', 5, 30, 0.3, 'Random Forest','./LIME')
+    pipeline('./example/example_french_royalty.json', 'undersampling', 5, 30, 0.3, 'Random Forest', './LIME')
+    # TODO: re-enable the possibility to run InterpretME in Docker

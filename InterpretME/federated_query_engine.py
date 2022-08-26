@@ -23,7 +23,6 @@ def configuration(interpretme_endpoint, input_endpoint):
 
     """
     main_path = resource_filename('InterpretME', '')
-    # print(main_path)
     mappings = [str(main_path) + '/mappings/classes.ttl',
                 str(main_path) + '/mappings/endpoint.ttl',
                 str(main_path) + '/mappings/cross_validation.ttl',
@@ -67,6 +66,7 @@ def federated(query, configuration):
     query_result = run_query(query, sparql_one_dot_one=service, config=configuration)
     print(query_result)
     return query_result
+
 
 if __name__ == "__main__":
     input_query = """  """

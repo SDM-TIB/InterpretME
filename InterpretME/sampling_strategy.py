@@ -3,15 +3,15 @@ from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
 
 
-def sampling_strategy(encode_data,encode_target,strategy,results):
+def sampling_strategy(encode_data, encode_target, strategy, results):
     """Sampling strategy.
 
     Parameters
     ----------
     encode_data : dataframe
-        Preporcessed unbalanced dataframe needed to apply sampling.
+        Preprocessed unbalanced dataframe needed to apply sampling.
     encode_target : dataframe
-        Preporcessed unbalanced target dataframe needed to apply sampling.
+        Preprocessed unbalanced target dataframe needed to apply sampling.
     strategy : str
         Sampling strategy specified by user (undersampling or oversampling).
     results : dict
@@ -19,27 +19,27 @@ def sampling_strategy(encode_data,encode_target,strategy,results):
 
     Returns
     -------
-    (dataframe. dataframe, dict)
+    (dataframe, dataframe, dict)
         Sampled dataa and results dictionary.
 
     """
-    global X,y
-    if (strategy=='undersampling'):
-        X, y, results = undersampling(encode_data,encode_target,results)
-    if (strategy=='oversampling'):
-        X, y, results = oversampling(encode_data,encode_target,results)
+    global X, y  # TODO: is there any reason why they are marked as global but are not defined at module level?
+    if strategy == 'undersampling':
+        X, y, results = undersampling(encode_data, encode_target, results)
+    if strategy == 'oversampling':
+        X, y, results = oversampling(encode_data, encode_target, results)
     return X, y, results
 
 
-def undersampling(encode_data, encode_target,results):
+def undersampling(encode_data, encode_target, results):
     """Under-Sampling strategy.
 
     Parameters
     ----------
     encode_data : dataframe
-        Preporcessed unbalanced dataframe needed to apply sampling.
+        Preprocessed unbalanced dataframe needed to apply sampling.
     encode_target : dataframe
-        Preporcessed unbalanced target dataframe needed to apply sampling.
+        Preprocessed unbalanced target dataframe needed to apply sampling.
     results : dict
         To store results of sampling plots.
 
@@ -49,7 +49,6 @@ def undersampling(encode_data, encode_target,results):
         Sampled data and results dictionary.
 
     """
-
     sampling_strategy = "not minority"
     X = encode_data
     Y = encode_target['class']
@@ -62,15 +61,16 @@ def undersampling(encode_data, encode_target,results):
     y_res = pd.DataFrame(data=y_res)
     return X_res, y_res, results
 
-def oversampling(encode_data, encode_target,results):
+
+def oversampling(encode_data, encode_target, results):
     """Over-Sampling strategy.
 
     Parameters
     ----------
     encode_data : dataframe
-        Preporcessed unbalanced dataframe needed to apply sampling.
+        Preprocessed unbalanced dataframe needed to apply sampling.
     encode_target : dataframe
-        Preporcessed unbalanced target dataframe needed to apply sampling.
+        Preprocessed unbalanced target dataframe needed to apply sampling.
     results : dict
         To store results of sampling plots.
 
@@ -81,7 +81,7 @@ def oversampling(encode_data, encode_target,results):
 
     """
     sampling_strategy = "not majority"
-    autopct = "%.2f"
+    autopct = "%.2f"  # TODO: unused variable; should it be deleted?
     X = encode_data
     Y = encode_target['class']
     ros = RandomOverSampler(sampling_strategy=sampling_strategy)
@@ -92,5 +92,3 @@ def oversampling(encode_data, encode_target,results):
     results['sampling'] = samp
     y_res = pd.DataFrame(data=y_res)
     return X_res, y_res, results
-
-

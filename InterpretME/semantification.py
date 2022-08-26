@@ -3,7 +3,8 @@ import validating_models.stats as stats
 from pkg_resources import resource_filename
 
 semantification = stats.get_decorator('PIPE_InterpretMEKG_SEMANTIFICATION')
-# with stats.measure_time('PIPE_InterpretMEKG_SEMANTIFICATION'):
+
+
 @semantification
 def rdf_semantification():
     print("#####################################################################")
@@ -61,6 +62,3 @@ def rdf_semantification():
 
     read_mappings = semantify("config_rdfizer.ini")
     print(read_mappings)
-
-
-

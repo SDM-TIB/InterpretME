@@ -89,15 +89,17 @@ def constraints_decision_trees(results, path, constraint_num):
 
     for i, constraint in enumerate(constraints, start=1):
         for x in num:
-            if(x == i):
-                plot = constraint_viz.dtreeviz(shadow_tree, checker, [constraint], coverage=False,
-                                               non_applicable_counts=non_applicable_counts)
+            if x == i:
+                plot = constraint_viz.dtreeviz(
+                    shadow_tree, checker, [constraint], coverage=False, non_applicable_counts=non_applicable_counts
+                )
                 plot.save(path + f'/constraint_{i}_validation_dtree_{run}.svg')
-
-                plot = confusion_matrix_decomposition(shadow_tree, checker, constraint,
-                                                      non_applicable_counts=non_applicable_counts)
+                plot = confusion_matrix_decomposition(
+                    shadow_tree, checker, constraint, non_applicable_counts=non_applicable_counts
+                )
                 plot.save(path + f'/constraint_{i}_validation_matrix_{run}.svg')
             else:
-                plot = constraint_viz.dtreeviz(shadow_tree, checker, constraints, coverage=True,
-                                               non_applicable_counts=non_applicable_counts)
+                plot = constraint_viz.dtreeviz(
+                    shadow_tree, checker, constraints, coverage=True, non_applicable_counts=non_applicable_counts
+                )
                 plot.save(path + f'/constraints_validation_dtree_{run}.svg')
