@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 import validating_models.stats as stats
+from pkg_resources import resource_filename
 from validating_models.checker import Checker
 from validating_models.constraint import ShaclSchemaConstraint
 from validating_models.dataset import BaseDataset, ProcessedDataset
@@ -96,7 +97,9 @@ def read(input_file, st):
 
         features = independent_var + dependent_var
 
-        shacl_engine_communicator = ReducedTravshaclCommunicator('', endpoint, 'example/shacl_api_config.json')
+        shacl_engine_communicator = ReducedTravshaclCommunicator(
+            '', endpoint, resource_filename('InterpretME', 'shacl_api_config.json')
+        )
 
         def hook(results):
             bindings = [{key: value['value'] for key, value in binding.items()}

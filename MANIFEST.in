@@ -1,2 +1,3 @@
 include LIBRARY.md
 include InterpretME/mappings/*.ttl
+include InterpretME/shacl_api_config.json
