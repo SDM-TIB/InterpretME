@@ -37,11 +37,11 @@ The function `pipeline()` returns results from the pipeline which are used later
 - `server_url` - URL of InterpretME KG
 - `username` - Username to upload data to InterpretME KG
 - `password` - Password to upload data to InterpretME KG
-- `sampling` - Sampling strategy to use (undersampling or oversampling)
-- `cv` - Number of cross-validation folds required while performing stratified shuffle split
-- `imp_features` - Number of important features
-- `test_split` - Splitting of training and testing dataset
-- `model` - Model used to perform stratified shuffle split (Random forest, Adaboost classifier, Gradient boosting classifier)
+- `sampling` - Optional; sampling strategy to use (undersampling or oversampling)
+- `cv` - Optional; number of cross-validation folds required while performing stratified shuffle split
+- `imp_features` - Optional; number of important features
+- `test_split` - Optional; splitting of training and testing dataset
+- `model` - Optional; model used to perform stratified shuffle split (Random forest, Adaboost classifier, Gradient boosting classifier)
 
 **Returns:**
 A dictionary that captures all the results of the trained predictive model stored as objects which can be used for further analysis for e.g., `plots.sampling()`.

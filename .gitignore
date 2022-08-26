@@ -179,14 +179,17 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
 
-output/travshacl
-
 .vs/
 .idea/
 
 # data from executing the example
 example/interpretme/
 example/interpretmekg/
-example/mappings
-example/rdf-dump
-
+example/rdf-dump/
+example/output/
+example/config_rdfizer.ini
+example/times.csv
+example/times.csv_hps.csv
+example/api.log
+example/.rdfmts.log
+example/.decompositions.log

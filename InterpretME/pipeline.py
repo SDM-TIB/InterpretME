@@ -193,7 +193,8 @@ def current_milli_time():
     return round(time.time() * 1000)
 
 
-def pipeline(path_config,lime_results, server_url, username, password, sampling=None, cv=None, imp_features=None, test_split=None, model=None):
+def pipeline(path_config, lime_results, server_url, username, password,
+             sampling=None, cv=None, imp_features=None, test_split=None, model=None):
     """Executing InterpretME pipeline.
 
     InterpretME pipeline is the important function which helps executes all the main components of
@@ -230,7 +231,6 @@ def pipeline(path_config,lime_results, server_url, username, password, sampling=
         objects which can be used for further analysis.
 
     """
-
     st = current_milli_time()
     print(st)
 
@@ -317,7 +317,7 @@ def pipeline(path_config,lime_results, server_url, username, password, sampling=
 
     with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
         upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
-                           server_url=server_url,username=username, password=password)
+                           server_url=server_url, username=username, password=password)
 
     stats.STATS_COLLECTOR.to_file(
         'times.csv',
@@ -331,5 +331,4 @@ def pipeline(path_config,lime_results, server_url, username, password, sampling=
 
 
 if __name__ == '__main__':
-    pipeline('./example/example_french_royalty.json', 'undersampling', 5, 30, 0.3, 'Random Forest', './LIME')
-
+    pipeline('../example/example_french_royalty.json', './LIME', 'http://localhost:8891/sparql', 'dba', 'dba')

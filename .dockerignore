@@ -1,21 +1,10 @@
 .vs/
 .idea/
 venv/
-**/.git
-**/.gitignore
-**/.gitmodules
-**/.dockerignore
-**/__pycache__
+.git/
+.gitignore
+.dockerignore
+**/__pycache__/
 Dockerfile
 example/
 images/
-InterpretME/validating_models/docs/
-InterpretME/validating_models/evaluation\ results/
-InterpretME/validating_models/notebooks/
-InterpretME/validating_models/sphinx/
-InterpretME/validating_models/generate_doc.sh
-InterpretME/validating_models/shaclAPI/docs/
-InterpretME/validating_models/shaclAPI/example/
-InterpretME/validating_models/shaclAPI/motivating\ example\ test/
-InterpretME/validating_models/shaclAPI/quickstart/
-InterpretME/validating_models/shaclAPI/tests/

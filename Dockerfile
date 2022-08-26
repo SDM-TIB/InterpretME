@@ -1,20 +1,21 @@
 # use an official Python image as base
-FROM python:3.8.11-slim-buster
+FROM python:3.8.13-slim-bullseye
 
 # install dependencies
-COPY requirements.txt /InterpretME/requirements.txt
-COPY InterpretME/validating_models/requirements.txt /InterpretME/requirements-validating_models.txt
 RUN apt-get update && \
     apt-get install -y --no-install-recommends graphviz && \
     rm -rf /var/lib/apt/lists/*  && \
-    python -m pip install --no-cache-dir --upgrade pip==22.0.* setuptools==58.0.4 && \
-    python -m pip install --no-cache-dir -r /InterpretME/requirements.txt && \
-    python -m pip install --no-cache-dir -r /InterpretME/requirements-validating_models.txt
+    python -m pip install --no-cache-dir --upgrade pip==22.0.* setuptools==58.0.4
 
-# copy the source code
-COPY InterpretME /InterpretME
+# copy the source code and install InterpretME
+COPY LIBRARY.md /InterpretME/
+COPY LICENSE /InterpretME/
+COPY MANIFEST.in /InterpretME/
+COPY README.md /InterpretME/
+COPY setup.py /InterpretME/
+COPY InterpretME /InterpretME/InterpretME
 WORKDIR /InterpretME
+RUN python -m pip install --no-cache-dir -e .
 
-# keep the container running
-# since InterpretME is not yet a service
+# keep the container running since InterpretME is not yet a service
 ENTRYPOINT ["tail", "-f", "/dev/null"]

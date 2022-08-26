@@ -46,14 +46,14 @@ def configuration(interpretme_endpoint, input_endpoint):
     return ConfigFile('./rdfmts.json')
 
 
-def federated(query, configuration):
+def federated(query, configuration=ConfigFile('./rdfmts.json')):
     """
 
     Parameters
     ----------
     query : str
         Input query.
-    configuration : config
+    configuration : config, OPTIONAL
 
     Returns
     -------

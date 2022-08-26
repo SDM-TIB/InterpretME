@@ -1,34 +1,5 @@
 version: "3.3"
 services:
-  sdmrdfizer:
-    image: sdmtib/sdmrdfizer:4.4.4
-    container_name: sdmrdfizer
-    volumes:
-      - .:/data
-      - ../InterpretME/mappings:/data/mappings
-    networks:
-      - interpretme
-    depends_on:
-      - interpretmekg
-    environment:
-      - SPARQL_ENDPOINT_IP=interpretmekg
-      - SPARQL_ENDPOINT_USER=dba
-      - SPARQL_ENDPOINT_PASSWD=dba
-      - SPARQL_ENDPOINT_PORT=1111
-      - SPARQL_ENDPOINT_GRAPH=http://interpretme.org
-      - RDF_DUMP_FOLDER_PATH=/database/toLoad
-
-  detrusty:
-    image: sdmtib/detrusty:0.6.1
-    container_name: detrusty
-    ports:
-      - "5000:5000"
-    networks:
-      - interpretme
-    depends_on:
-      - interpretmekg
-      - frenchroyalty
-
   interpretmekg:
     image: prohde/virtuoso-opensource-7:7.2.6
     container_name: interpretmekg
