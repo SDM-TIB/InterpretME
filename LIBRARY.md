@@ -19,7 +19,7 @@ pip install InterpretME
 ## Running the InterpretME Pipeline
 ```python
 from InterpretME import pipeline
-pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_results)
+pipeline(path_config, lime_results, server_url, username, password, sampling, cv, imp_features, test_split, model)
 ```
 
 `pipeline()` executes the whole pipeline; including extracting data and metadata from the input KGs, validating SHACL constraints, preprocessing the data and running predictive models.
@@ -33,12 +33,15 @@ The function `pipeline()` returns results from the pipeline which are used later
 
 **Parameters:**
 - `path_config` - Path to the input configuration file (JSON) for Input KG
+- `lime_results` - Path to store LIME results in HTML format
+- `server_url` - URL of InterpretME KG
+- `username` - Username to upload data to InterpretME KG
+- `password` - Password to upload data to InterpretME KG
 - `sampling` - Sampling strategy to use (undersampling or oversampling)
 - `cv` - Number of cross-validation folds required while performing stratified shuffle split
 - `imp_features` - Number of important features
 - `test_split` - Splitting of training and testing dataset
 - `model` - Model used to perform stratified shuffle split (Random forest, Adaboost classifier, Gradient boosting classifier)
-- `lime_results` - Path to store LIME results in HTML format
 
 **Returns:**
 A dictionary that captures all the results of the trained predictive model stored as objects which can be used for further analysis for e.g., `plots.sampling()`.
