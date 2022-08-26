@@ -86,5 +86,5 @@
     "number_important_features": 15,
     "cross_validation_folds": 5,
     "test_split": 0.3,
-    "train_model": "Random Forest"
+    "model": "Random Forest"
 }
