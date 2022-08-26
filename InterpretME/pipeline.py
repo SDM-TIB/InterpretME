@@ -66,6 +66,11 @@ def read(input_file, st):
 
         endpoint = input_data['Endpoint']
         seed_var = input_data['Index_var']
+        sampling = input_data['sampling_strategy']
+        cv = input_data['cross_validation_folds']
+        test_split = input_data['test_split']
+        num_imp_features = input_data['number_important_features']
+        train_model = input_data['model']
 
         independent_var = []
         dependent_var = []
@@ -180,7 +185,7 @@ def read(input_file, st):
     num = len(input_data['Constraints'])
     annotated_dataset = annotated_dataset.iloc[:, :-num]
 
-    return seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, input_data['3_valued_logic']
+    return seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, input_data['3_valued_logic'],sampling, test_split, num_imp_features, train_model, cv
 
 
 # get the start time and use it as run_id
@@ -188,7 +193,7 @@ def current_milli_time():
     return round(time.time() * 1000)
 
 
-def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_results):
+def pipeline(path_config,lime_results, server_url, username, password, sampling=None, cv=None, imp_features=None, test_split=None, model=None):
     """Executing InterpretME pipeline.
 
     InterpretME pipeline is the important function which helps executes all the main components of
@@ -197,13 +202,26 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_re
 
     Parameters
     ----------
-    path_config : Path to the configuration file from input knowledge graphs.
-    sampling : Sampling strategy.
-    cv : Number of cross validation folds for predictive modeling.
-    imp_features : Number of important features desired by user.
-    test_split : Training and testing data splits required by user.
-    model : Machine learning model (Random Forest, AdaBoost, Gradient Boosting).
-    lime_results : Path to store LIME results in HTML format. Default is None.
+    path_config : str
+        Path to the configuration file from input knowledge graphs.
+    lime_results : str
+        Path where to store LIME results in HTML format.
+    server_url : str
+        Server URL to upload the InterpretME knowledge graph.(e.g- Virtuoso)
+    username : str
+        Username to upload data to InterpretME KG.
+    password : str
+        Password to upload data to InterpretME KG.
+    sampling : str, OPTIONAL
+        Sampling strategy desired by user. Default is None (read from input .json file)
+    cv : int, OPTIONAL
+        Cross validation folds desired by user. Default is None (read from input .json file)
+    imp_features : int, OPTIONAL
+        Number of important features to train predictive model desired by user. Default is None (read from input .json file)
+    test_split : float, OPTIONAL
+        Training testing split of data desired by user. Default is None (read from input .json file)
+    model : str, OPTIONAL
+        Model to perform Stratified shuffle split desired by user. Default is None (read from input .json file)
 
     Returns
     -------
@@ -212,6 +230,7 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_re
         objects which can be used for further analysis.
 
     """
+
     st = current_milli_time()
     print(st)
 
@@ -224,25 +243,50 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_re
     stats.STATS_COLLECTOR.activate(hyperparameters=[])
     stats.STATS_COLLECTOR.new_run(hyperparameters=[])
 
+    seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, samplingstrategy, train_test_split, num_imp_features, train_model, cross_validation = read(path_config, st)
+
+    if sampling is None:
+        sampling = samplingstrategy
+    else:
+        sampling = sampling
+
     df3 = pd.DataFrame({'sampling': pd.Series(sampling)})
     df3.loc[:, 'run_id'] = st
     df3 = df3.set_index('run_id')
     df3.to_csv('interpretme/files/sampling_strategy.csv')
+
+    if imp_features is None:
+        imp_features = num_imp_features
+    else:
+        imp_features = imp_features
 
     df4 = pd.DataFrame({'num_imp_features': pd.Series(imp_features)})
     df4.loc[:, 'run_id'] = st
     df4 = df4.set_index('run_id')
     df4.to_csv('interpretme/files/imp_features.csv')
 
+    if cv is None:
+        cv = cross_validation
+    else:
+        cv = cv
+
     df5 = pd.DataFrame({'cross_validation': pd.Series(cv)})
     df5.loc[:, 'run_id'] = st
     df5 = df5.set_index('run_id')
     df5.to_csv('interpretme/files/cross_validation.csv')
 
-    seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts = read(path_config, st)
+    if test_split is None:
+        test_split = train_test_split
+    else:
+        test_split = test_split
+
+    if model is None:
+        model = train_model
+    else:
+        model = model
 
     with stats.measure_time('PIPE_PREPROCESSING'):
-        encoded_data, encode_target = preprocessing_data.load_data(seed_var, independent_var, dependent_var, classes, annotated_dataset)
+        encoded_data, encode_target = preprocessing_data.load_data(seed_var, dependent_var, classes, annotated_dataset)
 
     with stats.measure_time('PIPE_SAMPLING'):
         sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target, sampling, results)
@@ -273,8 +317,7 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_re
 
     with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
         upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
-                           server_url='http://localhost:8891/',
-                           username='dba', password='dba')
+                           server_url=server_url,username=username, password=password)
 
     stats.STATS_COLLECTOR.to_file(
         'times.csv',
@@ -289,4 +332,4 @@ def pipeline(path_config, sampling, cv, imp_features, test_split, model, lime_re
 
 if __name__ == '__main__':
     pipeline('./example/example_french_royalty.json', 'undersampling', 5, 30, 0.3, 'Random Forest', './LIME')
-    # TODO: re-enable the possibility to run InterpretME in Docker
+

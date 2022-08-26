@@ -84,9 +84,8 @@ def hot_encode(data, seed_var):
     return new_data
 
 
-# TODO: parameter independent_var is unused
 @time_preprocessing
-def load_data(seed_var, independent_var, dependent_var, classes, annotated_dataset):
+def load_data(seed_var, dependent_var, classes, annotated_dataset):
     """Preprocessing (one-hot encoding) the dataset extracted from input knowledge graph.
 
     Parameters

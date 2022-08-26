@@ -333,7 +333,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     return new_sampled_data, best_clf, results
 
 
-# TODO: parameter test_split is unused
+
 def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
                st, lime_results, test_split, model, results):
     """Multiclass classification technique
@@ -384,7 +384,7 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
             print('Gradient Boosting Classifier')
             estimator = GradientBoostingClassifier(random_state=0)
 
-        cv = StratifiedShuffleSplit(n_splits=cv, test_size=train_test_split, random_state=123)
+        cv = StratifiedShuffleSplit(n_splits=cv, test_size=test_split, random_state=123)
         important_features = set()
         important_features_size = imp_features
         print("#################################################################################")

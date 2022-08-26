@@ -4,7 +4,7 @@ from imblearn.over_sampling import RandomOverSampler
 
 
 def sampling_strategy(encode_data, encode_target, strategy, results):
-    """Sampling strategy.
+    """Sampling strategy to balance the imbalanced data for predictive model.
 
     Parameters
     ----------
@@ -23,7 +23,6 @@ def sampling_strategy(encode_data, encode_target, strategy, results):
         Sampled dataa and results dictionary.
 
     """
-    global X, y  # TODO: is there any reason why they are marked as global but are not defined at module level?
     if strategy == 'undersampling':
         X, y, results = undersampling(encode_data, encode_target, results)
     if strategy == 'oversampling':
@@ -81,7 +80,6 @@ def oversampling(encode_data, encode_target, results):
 
     """
     sampling_strategy = "not majority"
-    autopct = "%.2f"  # TODO: unused variable; should it be deleted?
     X = encode_data
     Y = encode_target['class']
     ros = RandomOverSampler(sampling_strategy=sampling_strategy)
