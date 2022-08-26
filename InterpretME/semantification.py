@@ -25,37 +25,37 @@ def rdf_semantification():
                                               'large_file: false\n\n' \
                                               '[dataset1]\n' \
                                               'name: classes\n' \
-                                              'mapping: ${default:main_directory}\mappings\classes.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/classes.ttl\n\n' \
                                               '[dataset2]\n' \
                                               'name: cross_validation\n' \
-                                              'mapping: ${default:main_directory}\mappings\cross_validation.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/cross_validation.ttl\n\n' \
                                               '[dataset3]\n' \
                                               'name: endpoint\n' \
-                                              'mapping: ${default:main_directory}\mappings\endpoint.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/endpoint.ttl\n\n' \
                                               '[dataset4]\n' \
                                               'name: feature_definition\n' \
-                                              'mapping: ${default:main_directory}\mappings\definition_feature.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/definition_feature.ttl\n\n' \
                                               '[dataset5]\n' \
                                               'name: imp_features\n' \
-                                              'mapping: ${default:main_directory}\mappings\imp_features.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/imp_features.ttl\n\n' \
                                               '[dataset6]\n' \
                                               'name: model_details\n' \
-                                              'mapping: ${default:main_directory}\mappings\model_details.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/model_details.ttl\n\n' \
                                               '[dataset7]\n' \
                                               'name: precision_recall\n' \
-                                              'mapping: ${default:main_directory}\mappings\precision_recall.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/precision_recall.ttl\n\n' \
                                               '[dataset8]\n' \
                                               'name: sampling_strategy\n' \
-                                              'mapping: ${default:main_directory}\mappings\sampling_strategy.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/sampling_strategy.ttl\n\n' \
                                               '[dataset9]\n' \
                                               'name: shacl_validation_results\n' \
-                                              'mapping: ${default:main_directory}\mappings\shacl_validation_results.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/shacl_validation_results.ttl\n\n' \
                                               '[dataset10]\n' \
                                               'name: lime_features\n' \
-                                              'mapping: ${default:main_directory}\mappings\lime_features.ttl\n\n' \
+                                              'mapping: ${default:main_directory}/mappings/lime_features.ttl\n\n' \
                                               '[dataset11]\n' \
                                               'name: prediction_probabilities\n' \
-                                              'mapping: ${default:main_directory}\mappings\prediction_probabilities.ttl\n\n'
+                                              'mapping: ${default:main_directory}/mappings/prediction_probabilities.ttl\n\n'
 
     with open('config_rdfizer.ini', 'w', encoding='utf8') as config_file:
         config_file.write(config)
