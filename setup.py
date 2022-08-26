@@ -40,7 +40,7 @@ setup(
         'dtreeviz>=1.3.0',
         'python-slugify>=6.0.0',
         'requests>=2.27.0',
-        'rdfizer>=4.5.4.1',
+        'rdfizer>=4.5.5',
         'Detrusty>=0.6.1',
         'validating-models>=0.9.0'
     ]
