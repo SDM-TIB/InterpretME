@@ -3,7 +3,7 @@
 You can run the pipeline with extended data from the French Royalty dataset by executing the following commands:
 
 1. start the containers: `docker-compose up -d`
-2. run the pipeline: `docker exec -it interpretme bash -c 'cd example; python example_pipeline.py`
+2. run the pipeline: `docker exec -it interpretme bash -c 'cd example; python example_pipeline.py'`
 
 After running the pipeline and uploading the data into the SPARQL endpoint, DeTrusty can be used to answer queries.
 In `queries/templates` you can find query templates (placeholders marked with `$$`) for answering the following questions:
