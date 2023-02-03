@@ -37,7 +37,7 @@ setup(
         'rdflib<=6.1.1',
         'seaborn>=0.11.2',
         'numpy>=1.21.6',
-        'dtreeviz>=1.3.0',
+        'dtreeviz>=1.3.0,<2.0.0',
         'python-slugify>=6.0.0',
         'requests>=2.27.0',
         'rdfizer>=4.5.5',
