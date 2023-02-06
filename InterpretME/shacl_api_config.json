@@ -1,4 +1,5 @@
 {
+    "shapeFormat": "SHACL",
     "backend": "travshacl",
     "start_with_target_shape": true,
     "replace_target_query": true,

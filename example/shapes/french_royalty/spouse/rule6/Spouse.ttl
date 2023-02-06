@@ -1,0 +1,7 @@
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix : <http://example.org/> .
+
+:Spouse  a  sh:NodeShape ;
+    sh:targetClass  dbo:Person ;
+    sh:targetQuery  "SELECT DISTINCT ?x WHERE { ?x <http://dbpedia.org/ontology/child> ?mychild . ?mychild <http://dbpedia.org/ontology/parent> ?myspouse . FILTER (?myspouse != ?x)}" .
