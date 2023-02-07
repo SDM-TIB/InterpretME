@@ -158,7 +158,7 @@ def read(input_file, st):
                     columns={constraint.name: 'SHACL result'})
                 df6['run_id'] = st
                 df6['SHACL schema'] = constraint.shape_schema_dir
-                df6['SHACL shape'] = constraint.target_shape
+                df6['SHACL shape'] = constraint.target_shape.rsplit('/', 1)[1][:-1]  # remove the prefix from the shape name
                 df6['SHACL constraint name'] = constraint.name
                 df6['constraint identifier'] = identifier
 
