@@ -50,6 +50,8 @@ def read_dataset(input_data,st):
     test_split = input_data['test_split']
     num_imp_features = input_data['number_important_features']
     train_model = input_data['model']
+    min_max_depth = input_data.get('min_max_depth', 4)
+    max_max_depth = input_data.get('max_max_depth', 6)
     independent_var = []
     dependent_var = []
     classes = []
@@ -81,7 +83,8 @@ def read_dataset(input_data,st):
         df2.loc[:, 'run_id'] = st
         df2 = df2.set_index('run_id')
         df2.to_csv('interpretme/files/classes.csv')
-    return seed_var, independent_var, dependent_var, classes, class_names, st, sampling, test_split, num_imp_features, train_model, cv, annotated_dataset
+    return seed_var, independent_var, dependent_var, classes, class_names, st, sampling, test_split, num_imp_features, train_model, cv, annotated_dataset, min_max_depth, max_max_depth
+
 
 def read_KG(input_data, st):
     """Reads from the input knowledge graphs and extracts data.
@@ -116,6 +119,8 @@ def read_KG(input_data, st):
     test_split = input_data['test_split']
     num_imp_features = input_data['number_important_features']
     train_model = input_data['model']
+    min_max_depth = input_data.get('min_max_depth', 4)
+    max_max_depth = input_data.get('max_max_depth', 6)
 
     # Create the dataset generating query
     query_select_clause = "SELECT "
@@ -224,7 +229,7 @@ def read_KG(input_data, st):
     num = len(input_data['Constraints'])
     annotated_dataset = annotated_dataset.iloc[:, :-num]
 
-    return seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, input_data['3_valued_logic'],sampling, test_split, num_imp_features, train_model, cv
+    return seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, input_data['3_valued_logic'], sampling, test_split, num_imp_features, train_model, cv, min_max_depth, max_max_depth
 
 
 
@@ -290,13 +295,12 @@ def pipeline(path_config, lime_results, server_url, username, password,
     if "Endpoint" in input_data.keys() and "path_to_data" not in input_data.keys():
         # input from SPARQL endpoint
         input_is_kg = True
-        seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, path, samplingstrategy, train_test_split, num_imp_features, train_model, cross_validation = read_KG(
-            path_config, st)
+        seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, samplingstrategy, train_test_split, num_imp_features, train_model, cross_validation, min_max_depth, max_max_depth = read_KG(input_data, st)
 
     elif "Endpoint" not in input_data.keys() and "path_to_data" in input_data.keys():
         # input from dataset
         input_is_kg = False
-        seed_var, independent_var, dependent_var, classes, class_names, st, sampling, test_split, num_imp_features, train_model, cv, annotated_dataset = read_dataset(input_data,st)
+        seed_var, independent_var, dependent_var, classes, class_names, st, sampling, test_split, num_imp_features, train_model, cv, annotated_dataset, min_max_depth, max_max_depth = read_dataset(input_data, st)
 
     else:
         # error
@@ -349,7 +353,7 @@ def pipeline(path_config, lime_results, server_url, username, password,
     with stats.measure_time('PIPE_SAMPLING'):
         sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target, sampling, results)
 
-    new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results)
+    new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth)
     processed_df = pd.concat((new_sampled_data, sampled_target), axis='columns')
     processed_df.reset_index(inplace=True)
 

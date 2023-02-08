@@ -1,19 +1,48 @@
 import os
-
+import optuna
 import lime
 import lime.lime_tabular
 import numpy as np
 import pandas as pd
+import sklearn
 import validating_models.stats as stats
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import train_test_split
 from slugify import slugify
 
 from . import dtreeviz_lib
+
+
+class AutoMLOptuna(object):
+    def __init__(self, min_max_depth, max_max_depth, X, y):
+        self.min_max_depth = min_max_depth
+        self.max_max_depth = max_max_depth
+        self.X = X
+        self.y = y
+
+    def __call__(self, trial):
+        classifier_name = trial.suggest_categorical("classifier", ["DecisionTreeClassifier"])
+        if classifier_name == "DecisionTreeClassifier":
+            dt_random_state = trial.suggest_int("random_state", 123, 123)
+            dt_min_samples_split = trial.suggest_int("min_samples_split", 2, 2)
+            dt_min_samples_leaf = trial.suggest_int("min_samples_leaf", 1, 1)
+            dt_min_weight_fraction_leaf = trial.suggest_float("min_weight_fraction_leaf", 0.0, 0.0)
+            dt_ccp_alpha = trial.suggest_float("ccp_alpha", 0.0, 0.0)
+            dt_criterion = trial.suggest_categorical("criterion", ["gini", "entropy", "log_loss"])
+            dt_splitter = trial.suggest_categorical("splitter", ["best", "random"])
+            dt_max_depth = trial.suggest_int("max_depth", self.min_max_depth, self.max_max_depth, log=True)
+            classifier_obj = tree.DecisionTreeClassifier(max_depth=dt_max_depth, criterion=dt_criterion,
+                                                         splitter=dt_splitter, random_state=dt_random_state,
+                                                         min_samples_leaf=dt_min_samples_leaf,
+                                                         min_samples_split=dt_min_samples_split,
+                                                         min_weight_fraction_leaf=dt_min_weight_fraction_leaf,
+                                                         ccp_alpha=dt_ccp_alpha)
+
+        score = sklearn.model_selection.cross_val_score(classifier_obj, self.X, self.y, n_jobs=-1, cv=3)
+        return score.mean()
 
 
 def is_notebook() -> bool:
@@ -41,7 +70,7 @@ time_output = stats.get_decorator('PIPE_OUTPUT')
 
 
 def classify(sampled_data, sampled_target, imp_features, cv, classes,
-             st, lime_results, train_test_split, model, results):
+             st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth):
     """Selecting classification strategy based on the number of classes provided by the user.
 
     Parameters
@@ -74,10 +103,10 @@ def classify(sampled_data, sampled_target, imp_features, cv, classes,
     """
     if len(classes) == 2:
         new_sampled_data, clf, results = binary_classification(sampled_data, sampled_target, imp_features, cv, classes,
-                                                               st, lime_results, train_test_split, model, results)
+                                                               st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth)
     else:
         new_sampled_data, clf, results = multiclass(sampled_data, sampled_target, imp_features, cv, classes, st,
-                                                    lime_results, train_test_split, model, results)
+                                                    lime_results, train_test_split, model, results, min_max_depth, max_max_depth)
     return new_sampled_data, clf, results
 
 
@@ -189,12 +218,11 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     df2.loc[:, 'run_id'] = st
     df2 = df2.set_index('index')
     df2.to_csv("interpretme/files/predicition_probabilities.csv")
-
     return df1
 
 
 def binary_classification(sampled_data, sampled_target, imp_features, cross_validation,
-                          classes, st, lime_results, test_split, model, results):
+                          classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth):
     """Binary classification technique.
 
     Parameters
@@ -272,15 +300,24 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
     )
 
     feature_names = new_sampled_data.columns
-    parameters = {"max_depth": range(4, 6)}
-    with stats.measure_time('PIPE_TRAIN_MODEL'):
-        # Defining Decision tree Classifier
-        clf = tree.DecisionTreeClassifier()
 
-        # GridSearchCV to select best hyperparameters
-        grid = GridSearchCV(estimator=clf, param_grid=parameters)
-        grid_res = grid.fit(X_train, y_train)
-        best_clf = grid_res.best_estimator_
+    with stats.measure_time('PIPE_TRAIN_MODEL'):
+        # Hyperparameter Optimization using AutoML
+        study = optuna.create_study(direction="maximize")
+        automl_optuna = AutoMLOptuna(min_max_depth, max_max_depth, X_train, y_train)
+        study.optimize(automl_optuna, n_trials=100)
+        # print(study.best_value)
+        # print(study.best_params)
+        params = study.best_params
+        del params['classifier']
+        best_clf = tree.DecisionTreeClassifier(**params)
+        best_clf.fit(X_train, y_train)
+
+        # parameters = {"max_depth": range(4, 6)}
+        # # GridSearchCV to select best hyperparameters
+        # grid = GridSearchCV(estimator=clf, param_grid=parameters)
+        # grid_res = grid.fit(X_train, y_train)
+        # best_clf = grid_res.best_estimator_
 
     # predictions = (clf.fit(X_train, y_train)).predict(X_test)
     with stats.measure_time('PIPE_OUTPUT'):
@@ -288,7 +325,8 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         y_pred = best_clf.predict(X_test)
         model_name = type(best_clf).__name__
 
-        hyp = best_clf.get_params()
+        # hyp = best_clf.get_params()
+        hyp = study.best_params
         hyp_keys = hyp.keys()
         hyp_val = hyp.values()
 
@@ -335,7 +373,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
 
 
 def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
-               st, lime_results, test_split, model, results):
+               st, lime_results, test_split, model, results, min_max_depth, max_max_depth):
     """Multiclass classification technique
 
     Parameters
@@ -413,15 +451,25 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
     )
 
     feature_names = new_sampled_data.columns
-    parameters = {"max_depth": 3}
+    # parameters = {"max_depth": 3}
     # Defining Decision tree Classifier
     with stats.measure_time('PIPE_TRAIN_MODEL'):
-        clf = tree.DecisionTreeClassifier()
+        # Hyperparameter Optimization using AutoML
+        study = optuna.create_study(direction="maximize")
+        automl_optuna = AutoMLOptuna(min_max_depth, max_max_depth, X_train, y_train)
+        study.optimize(automl_optuna, n_trials=100)
+        # print(study.best_value)
+        # print(study.best_params)
+        params = study.best_params
+        del params['classifier']
+        best_clf = tree.DecisionTreeClassifier(**params)
+        best_clf.fit(X_train, y_train)
 
-        # GridSearchCV to select best hyperparameters
-        grid = GridSearchCV(estimator=clf, param_grid=parameters)
-        grid_res = grid.fit(X_train, y_train)
-        best_clf = grid_res.best_estimator_
+        # parameters = {"max_depth": range(4, 6)}
+        # # GridSearchCV to select best hyperparameters
+        # grid = GridSearchCV(estimator=clf, param_grid=parameters)
+        # grid_res = grid.fit(X_train, y_train)
+        # best_clf = grid_res.best_estimator_
 
     with stats.measure_time('PIPE_OUTPUT'):
         acc = best_clf.score(X_test, y_test)
