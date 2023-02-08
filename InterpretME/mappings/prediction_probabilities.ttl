@@ -9,7 +9,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix intr: <http://interpretme.org/vocab/> .
 
-<Prediction_probablity>
+<PredictionProbability>
     rml:logicalSource [ rml:source "interpretme/files/predicition_probabilities.csv";
                         rml:referenceFormulation ql:CSV;
                         ];
@@ -64,31 +64,3 @@
           
         ]   
     ]. 
-
- <Entity_Alignment>
-    rml:logicalSource [ rml:source "interpretme/files/entityAlignment.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
-    rr:subjectMap [
-        rr:template "http://interpretme.org/entity/{index}_{run_id}";
-        rr:class intr:TargetEntity
-      ];    
-    rr:predicateObjectMap [
-        rr:predicate intr:hasEntity;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{index}"; 
-        ]   
-    ];
-    rr:predicateObjectMap [
-        rr:predicate intr:hasRun;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{run_id}";   
-        ]
-    ];
-    rr:predicateObjectMap [
-        rr:predicate owl:sameAs;
-        rr:objectMap [ 
-        rml:reference "node"; 
-        rr:termType  rr:IRI
-        ]   
-    ].
