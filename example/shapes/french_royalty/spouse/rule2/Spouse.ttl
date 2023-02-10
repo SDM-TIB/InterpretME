@@ -4,4 +4,4 @@
 
 :Spouse  a  sh:NodeShape ;
     sh:targetClass  dbo:Person ;
-    sh:targetQuery  "SELECT DISTINCT ?x WHERE { ?x <http://dbpedia.org/ontology/spouse> ?me . FILTER (?x != ?me)}" .
+    sh:targetQuery  "SELECT DISTINCT ?x WHERE { ?x <http://dbpedia.org/ontology/child> ?y . ?y <http://dbpedia.org/ontology/parent> ?z . FILTER (?x != ?z) }" .
