@@ -4,6 +4,5 @@
     "replace_target_query": true,
     "prune_shape_network": true,
     "output_format": "simple",
-    "outputs": true,
-    "output_directory": "./output/"
+    "outputs": false
 }
