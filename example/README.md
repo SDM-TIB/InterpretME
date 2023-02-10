@@ -5,7 +5,8 @@ You can run the pipeline with extended data from the French Royalty dataset by e
 1. start the containers: `docker-compose up -d`
 2. run the pipeline: `docker exec -it interpretme bash -c "cd example; python example_pipeline.py"`
 
-After running the pipeline and uploading the data into the SPARQL endpoint, DeTrusty can be used to answer queries.
+After running the pipeline, the produced plots can be found in `./interpretme/output/`.
+Once the data is uploaded into the SPARQL endpoint, DeTrusty can be used to answer queries.
 In `queries/templates` you can find query templates (placeholders marked with `$$`) for answering the following questions:
 
 1. Which is the target entity interpreted by LIME?
