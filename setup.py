@@ -41,7 +41,7 @@ setup(
         'python-slugify>=6.0.0',
         'requests>=2.27.0',
         'rdfizer>=4.5.5',
-        'DeTrusty>=0.9.1',
+        'DeTrusty>=0.11.1',
         'validating-models>=0.9.0',
         'optuna>=3.1.0'
     ]
