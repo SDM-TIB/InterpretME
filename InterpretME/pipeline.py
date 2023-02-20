@@ -42,8 +42,14 @@ def constraint_md5_sum(constraint):
 
 def read_dataset(input_data,st):
     path = input_data['path_to_data']
-    annotated_dataset = pd.read_csv(path)
-    #print(annotated_dataset)
+    if os.path.splitext(path)[1].lower() == '.json':
+        with stats.measure_time('PIPE_DATASET_EXTRACTION'):
+            annotated_dataset = pd.read_json(path)
+            print("Reading the data in json format", annotated_dataset)
+    else:  # assuming CSV
+        with stats.measure_time('PIPE_DATASET_EXTRACTION'):
+            annotated_dataset = pd.read_csv(path)
+            print("Reading the data in csv format")
     seed_var = input_data['Index_var']
     sampling = input_data['sampling_strategy']
     cv = input_data['cross_validation_folds']
@@ -57,7 +63,8 @@ def read_dataset(input_data,st):
     classes = []
     class_names = []
     definition = []
-        # Create the dataset
+
+    # Create the dataset
     for k, v in enumerate(input_data['Independent_variable']):
         independent_var.append(v)
         print("data_list:",independent_var)
@@ -391,7 +398,3 @@ def pipeline(path_config, lime_results, server_url, username, password,
     )
 
     return results
-
-
-if __name__ == '__main__':
-    pipeline('../example/example_drugs_dataset.json', './LIME', 'http://localhost:8891/sparql', 'dba', 'dba')
