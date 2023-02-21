@@ -1,0 +1,17 @@
+{
+  "path_to_data": "../example/Dataset/iris.json",
+  "Type": "Drug",
+  "Index_var": "sepalLength",
+  "Independent_variable": ["sepalLength","sepalWidth","petalLength","petalWidth"],
+  "Dependent_variable": ["species"],
+  "classes": {
+    "class0": "setosa",
+    "class1": "versicolor",
+    "class2": "virginica"
+  },
+  "sampling_strategy": "undersampling",
+  "number_important_features": 6,
+  "cross_validation_folds": 5,
+  "test_split": 0.3,
+  "model": "Random Forest"
+}

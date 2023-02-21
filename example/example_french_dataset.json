@@ -1,0 +1,18 @@
+{
+  "path_to_data": "../example/Dataset/data_french_royalty.csv",
+  "Type": "Person",
+  "Index_var": "x",
+  "Independent_variable": ["x","gender","childs","predecessors","preds","objects","subjects"],
+  "Dependent_variable": ["HasSpouse"],
+  "classes": {
+    "NoSpouse": "0",
+    "HasSpouse": "1"
+  },
+  "sampling_strategy": "undersampling",
+  "number_important_features": 6,
+  "cross_validation_folds": 5,
+  "test_split": 0.3,
+  "model": "Random Forest",
+  "min_max_depth": 4,
+  "max_max_depth": 6
+}
