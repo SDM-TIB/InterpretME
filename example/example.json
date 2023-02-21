@@ -18,64 +18,63 @@
       {
         "name": "C10",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule10",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule10",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C9",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule9",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule9",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C8",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule8",
-        "target_shape": "Spouse"
-      },      
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule8",
+        "target_shape": "<http://example.org/Spouse>"
+      },
       {
         "name": "C7",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule7",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule7",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C6",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule6",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule6",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C5",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule5",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule5",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C4",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule4",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule4",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C3",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule3",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule3",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C2",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule2",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule2",
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C1",
         "inverted": false,
-        "shape_schema_dir": "shapes/french_royalty/spouse/rule1",
-        "target_shape": "Spouse"
+        "shape_schema_dir": "../example/shapes/french_royalty/spouse/rule1",
+        "target_shape": "<http://example.org/Spouse>"
       }
-
     ],
     "classes": {
       "NoSpouse": "0",

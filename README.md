@@ -27,7 +27,7 @@ In brief, the first quadrant is responsible to perform all the predictive model 
 The second quadrant "Documenting of interpretable predictive model" provides assistance to the user by generating the InterpretME KG and executing federated query on top of the InterpretME KG and original KG.
 This, in turn, helps user to perform data exploration and trace the entity predicted with all the relevant features in the original KG.
 Additionally, different metrics like precision, recall and accuracy along with LIME interpretations are provided to the user.
-
+InterpretME accepts input in the form of Knowledge graphs (`SPARQL endpoint` and `query`) or datasets (`.csv` or `.json`). 
 ```json
 {
     "Endpoint": "http://frenchroyalty:8890/sparql",
@@ -50,19 +50,19 @@ Additionally, different metrics like precision, recall and accuracy along with L
         "name": "C3",
         "inverted": false,
         "shape_schema_dir": "example/shapes/french_royalty/spouse/rule3",
-        "target_shape": "Spouse"
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C2",
         "inverted": false,
         "shape_schema_dir": "example/shapes/french_royalty/spouse/rule2",
-        "target_shape": "Spouse"
+        "target_shape": "<http://example.org/Spouse>"
       },
       {
         "name": "C1",
         "inverted": false,
         "shape_schema_dir": "example/shapes/french_royalty/spouse/rule1",
-        "target_shape": "Spouse"
+        "target_shape": "<http://example.org/Spouse>"
       }
 
     ],
@@ -73,7 +73,11 @@ Additionally, different metrics like precision, recall and accuracy along with L
     "3_valued_logic": true,
     "sampling_strategy": "undersampling",
     "number_important_features": 5,
-    "cross_validation_folds": 5
+    "cross_validation_folds": 5,
+    "test_split": 0.3,
+    "model": "Random Forest",
+    "min_max_depth": 4,
+    "max_max_depth": 6
 }
 ```
 

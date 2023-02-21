@@ -65,13 +65,12 @@ def read_dataset(input_data,st):
     definition = []
 
     # Create the dataset
+    annotated_dataset = annotated_dataset.set_index(seed_var)
     for k, v in enumerate(input_data['Independent_variable']):
         independent_var.append(v)
-        print("data_list:",independent_var)
         definition.append(v)
     for k, v in enumerate(input_data['Dependent_variable']):
         dependent_var.append(v)
-        print("data_list:", dependent_var)
         definition.append(v)
 
     features = independent_var + dependent_var
@@ -134,14 +133,12 @@ def read_KG(input_data, st):
     query_where_clause = """WHERE { """
     for k, v in input_data['Independent_variable'].items():
         independent_var.append(k)
-        # print("data_list:",independent_var)
         query_select_clause = query_select_clause + "?" + k + " "
         query_where_clause = query_where_clause + v
         definition.append(v)
 
     for k, v in input_data['Dependent_variable'].items():
         dependent_var.append(k)
-        # print("target_list:", dependent_var)
         query_select_clause = query_select_clause + "?" + k + " "
         query_where_clause = query_where_clause + v
         target_name = k
