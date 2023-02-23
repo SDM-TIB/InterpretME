@@ -3,7 +3,7 @@
 You can run the pipeline with extended data from the French Royalty dataset by executing the following commands:
 
 1. start the containers: `docker-compose up -d`
-2. run the pipeline: `docker exec -it interpretme bash -c "cd example; python example_pipeline.py"`
+2. run the pipeline: `docker exec -it interpretme bash -c "cd example; python example_pipeline.py <config_json>"` where`<config_json>` is one of `example_kg_french_royalty.json` and `example_csv_french_royalty.json`.
 
 After running the pipeline, the produced plots can be found in `./interpretme/output/`.
 Once the data is uploaded into the SPARQL endpoint, DeTrusty can be used to answer queries.

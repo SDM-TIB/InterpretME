@@ -193,3 +193,4 @@ example/times.csv_hps.csv
 example/api.log
 example/.rdfmts.log
 example/.decompositions.log
+example/rdfmts.json

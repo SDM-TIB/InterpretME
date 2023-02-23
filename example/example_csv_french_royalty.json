@@ -1,8 +1,8 @@
 {
-  "path_to_data": "../example/Dataset/data_french_royalty.csv",
+  "path_to_data": "dataset/data_french_royalty.csv",
   "Type": "Person",
   "Index_var": "x",
-  "Independent_variable": ["x","gender","childs","predecessors","preds","objects","subjects"],
+  "Independent_variable": ["x", "gender", "childs", "predecessors", "preds", "objects", "subjects"],
   "Dependent_variable": ["HasSpouse"],
   "classes": {
     "NoSpouse": "0",

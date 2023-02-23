@@ -26,7 +26,7 @@ services:
     image: sdmtib/interpretme:latest
     container_name: interpretme
     volumes:
-      - ./interpretme/dataset:/InterpretME/dataset
+      - ./dataset:/InterpretME/dataset
       - ./interpretme/output:/InterpretME/output
       - ./interpretme/files:/InterpretME/files
       - .:/InterpretME/example
