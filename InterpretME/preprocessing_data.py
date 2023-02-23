@@ -31,7 +31,6 @@ def define_class(classes, dependent_var, annotated_dataset):
         if length == 2:
               class0, class1 = map(str, classes)
               id_0 = target.index[target.iloc[:, 0].astype(str).str.contains(class0)]
-              print(id_0)
               target.loc[(target.index.isin(id_0)), 'class'] = 0
               target.loc[~(target.index.isin(id_0)), 'class'] = 1
               target = target[['class']]
