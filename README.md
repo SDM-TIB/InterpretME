@@ -130,7 +130,7 @@ The above figure shows the list of relevant features in random forest; most impo
 ![Target Entity Degree Distribution](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/DegreeDistribution.png "Target Entity Degree Distribution")
 
 The average number of neighbours in the original KG was 11.39 (std 5.06).
-With the metadata traced by InterpretME, the number increased to 26.99 (std 6.94).
+With the metadata traced by InterpretME, the number increased to 27.19 (std 6.13).
 The increase in the average number of neighbours shows that InterpretME enhances the interpretability of the target entities.
 The original KG is available as a [public SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-og/sparql).
 The original data enhanced with the metadata traced by InterpretME is also publicly available as a [SPARQL endpoint](https://labs.tib.eu/sdm/InterpretME-wog/sparql).
