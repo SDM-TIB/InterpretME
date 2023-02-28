@@ -6,12 +6,12 @@ with open("LIBRARY.md", "r", encoding="utf8") as fh:
 setup(
     name='InterpretME',
     packages=['InterpretME'],
-    version='1.1.1',
+    version='1.2.0',
     description='An interpretable machine learning pipeline over knowledge graphs',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Yashraj Chudasama, Disha Purohit, Philipp Rohde, Julian Gercke',
-    author_email= 'yashraj.chudasama@tib.eu',
+    author_email='yashraj.chudasama@tib.eu',
     url='https://github.com/SDM-TIB/InterpretME',
     include_package_data=True,
     classifiers=[
