@@ -33,6 +33,7 @@ def configuration(interpretme_endpoint, input_endpoint):
                 str(main_path) + '/mappings/precision_recall.ttl',
                 str(main_path) + '/mappings/prediction_probabilities.ttl',
                 str(main_path) + '/mappings/sampling_strategy.ttl',
+                str(main_path) + '/mappings/entity_alignment.ttl',
                 str(main_path) + '/mappings/shacl_validation_results.ttl']
 
     endpoints_dict = {
