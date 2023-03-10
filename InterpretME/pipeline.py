@@ -242,7 +242,7 @@ def current_milli_time():
     return round(time.time() * 1000)
 
 
-def pipeline(path_config, lime_results, server_url, username, password,
+def pipeline(path_config, lime_results, server_url=None, username=None, password=None,
              sampling=None, cv=None, imp_features=None, test_split=None, model=None):
     """Executing InterpretME pipeline.
 
@@ -250,17 +250,19 @@ def pipeline(path_config, lime_results, server_url, username, password,
     InterpretME including extraction of data from input knowledge graphs, preprocessing data,
     applying sampling strategy if specified by user, and generating machine learning model outputs.
 
+    If a server URL, username, and password are given, the generated InterpretME KG is uploaded there.
+
     Parameters
     ----------
     path_config : str
         Path to the configuration file from input knowledge graphs.
     lime_results : str
         Path where to store LIME results in HTML format.
-    server_url : str
+    server_url : str, OPTIONAL
         Server URL to upload the InterpretME knowledge graph.(e.g- Virtuoso)
-    username : str
+    username : str, OPTIONAL
         Username to upload data to InterpretME KG.
-    password : str
+    password : str, OPTIONAL
         Password to upload data to InterpretME KG.
     sampling : str, OPTIONAL
         Sampling strategy desired by user. Default is None (read from input .json file)
@@ -308,8 +310,7 @@ def pipeline(path_config, lime_results, server_url, username, password,
 
     else:
         # error
-        raise Exception ("Please provide either SPARQL endpoint or Dataset")
-
+        raise Exception("Please provide either SPARQL endpoint or Dataset")
 
     if sampling is None:
         sampling = samplingstrategy
@@ -382,16 +383,17 @@ def pipeline(path_config, lime_results, server_url, username, password,
     with stats.measure_time('PIPE_InterpretMEKG_SEMANTIFICATION'):
         rdf_semantification(input_is_kg)
 
-    with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
-        upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
-                           server_url=server_url, username=username, password=password)
+    categories_stats = ['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
+                        'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_TRAIN_MODEL',
+                        'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join',
+                        'PIPE_InterpretMEKG_SEMANTIFICATION']
 
-    stats.STATS_COLLECTOR.to_file(
-        'times.csv',
-        categories=['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
-                    'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_TRAIN_MODEL',
-                    'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join',
-                    'PIPE_InterpretMEKG_SEMANTIFICATION', 'PIPE_InterpretMEKG_UPLOAD_VIRTUOSO']
-    )
+    if server_url is not None and username is not None and password is not None:
+        categories_stats.append('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO')
+        with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
+            upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
+                               server_url=server_url, username=username, password=password)
+
+    stats.STATS_COLLECTOR.to_file('times.csv', categories=categories_stats)
 
     return results
