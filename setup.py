@@ -6,7 +6,7 @@ with open("LIBRARY.md", "r", encoding="utf8") as fh:
 setup(
     name='InterpretME',
     packages=['InterpretME'],
-    version='1.2.1',
+    version='1.2.2',
     description='An interpretable machine learning pipeline over knowledge graphs',
     long_description=long_description,
     long_description_content_type="text/markdown",
