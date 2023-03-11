@@ -14,6 +14,11 @@ def sampling(results, path):
     path : str
         Path to save plot results.
 
+    Returns
+    -------
+    str
+        Path of the saved plot.
+
     """
     autopct = "%.2f"
     val = results['sampling']
@@ -22,6 +27,7 @@ def sampling(results, path):
     val.plot.pie(autopct=autopct)
     plt.title("Sampling Strategy")
     plt.savefig(file)
+    return file
 
 
 def feature_importance(results, path):
@@ -33,6 +39,11 @@ def feature_importance(results, path):
          Dictionary to save results.
     path : str
         Path to save plot results.
+
+    Returns
+    -------
+    str
+        Path of the saved plot.
 
     """
     fi_df = results['feature_importance']
@@ -47,6 +58,7 @@ def feature_importance(results, path):
     plt.xlabel('FEATURE IMPORTANCE')
     plt.ylabel('FEATURE NAMES')
     plt.savefig(file)
+    return file
 
 
 def decision_trees(results, path):
@@ -59,11 +71,17 @@ def decision_trees(results, path):
     path : str
         Path to save plot results.
 
+    Returns
+    -------
+    str
+        Path of the saved plot.
+
     """
     file = path + f"/Decision_trees_{results['run_id']}.svg"
     print("Saving decision trees to", file)
     vis = results['dtree']
     vis.save(file)
+    return file
 
 
 def constraints_decision_trees(results, path, constraint_num):
@@ -78,6 +96,11 @@ def constraints_decision_trees(results, path, constraint_num):
     constraint_num : list
         Number of constraints for saving plots.
 
+    Returns
+    -------
+    List[str]
+        List containing the paths of the saved plots.
+
     """
     print("Saving constraints decision trees to", path)
     run = results['run_id']
@@ -86,6 +109,7 @@ def constraints_decision_trees(results, path, constraint_num):
     constraints = results['constraints']
     non_applicable_counts = results['non_applicable_counts']
     num = constraint_num
+    files = []
 
     for i, constraint in enumerate(constraints, start=1):
         for x in num:
@@ -98,8 +122,12 @@ def constraints_decision_trees(results, path, constraint_num):
                     shadow_tree, checker, constraint, non_applicable_counts=non_applicable_counts
                 )
                 plot.save(path + f'/constraint_{i}_validation_matrix_{run}.svg')
+                files.append(path + f'/constraint_{i}_validation_dtree_{run}.svg')
+                files.append(path + f'/constraint_{i}_validation_matrix_{run}.svg')
             else:
                 plot = constraint_viz.dtreeviz(
                     shadow_tree, checker, constraints, coverage=True, non_applicable_counts=non_applicable_counts
                 )
                 plot.save(path + f'/constraints_validation_dtree_{run}.svg')
+                files.append(path + f'/constraints_validation_dtree_{run}.svg')
+    return files
