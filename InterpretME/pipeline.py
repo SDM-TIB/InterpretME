@@ -159,7 +159,7 @@ def read_KG(input_data, st):
                     for binding in results['results']['bindings']]
         df = pd.DataFrame.from_dict(bindings)
         for column in df.columns:
-            df[column] = df[column].str.rsplit('/', 1).str[-1]
+            df[column] = df[column].str.rsplit('/', n=1).str[-1]
         return df
 
     with stats.measure_time('PIPE_DATASET_EXTRACTION'):
