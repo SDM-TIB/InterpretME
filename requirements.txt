@@ -7,12 +7,12 @@ colour==0.1.5
 matplotlib==3.3.4
 seaborn==0.11.2
 numpy==1.23.5
-requests==2.27.1
+requests==2.31.0
 graphviz==0.20.1
-dtreeviz==1.4.1
+dtreeviz==2.2.1
 python-slugify==6.0.0
 rdfizer==4.5.5
 rdflib==6.1.1
-DeTrusty==0.11.1
-validating-models==0.9.0
-optuna==3.1.0
+DeTrusty==0.12.2
+validating-models==0.9.5
+optuna==3.2.0
