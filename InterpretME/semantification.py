@@ -1,15 +1,14 @@
 from rdfizer import semantify
 import validating_models.stats as stats
 from pkg_resources import resource_filename
+from InterpretME.utils import HiddenPrints
+
 
 semantification = stats.get_decorator('PIPE_InterpretMEKG_SEMANTIFICATION')
 
 
 @semantification
 def rdf_semantification(input_is_kg: bool):
-    print("#####################################################################")
-    print("******* Semantifying traced metadata from predictive pipeline *******")
-    print("#####################################################################")
     main_path = resource_filename('InterpretME', '')
     if input_is_kg:
         number_of_datasets = 12
@@ -68,4 +67,5 @@ def rdf_semantification(input_is_kg: bool):
     with open('config_rdfizer.ini', 'w', encoding='utf8') as config_file:
         config_file.write(config)
 
-    semantify("config_rdfizer.ini")
+    with HiddenPrints():
+        semantify("config_rdfizer.ini")

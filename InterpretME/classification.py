@@ -14,6 +14,9 @@ from sklearn.model_selection import train_test_split
 from slugify import slugify
 
 from . import dtreeviz_lib
+import InterpretME.utils as utils
+
+optuna.logging.set_verbosity(optuna.logging.ERROR)
 
 
 class AutoMLOptuna(object):
@@ -45,23 +48,10 @@ class AutoMLOptuna(object):
         return score.mean()
 
 
-def is_notebook() -> bool:
-    try:
-        shell = get_ipython().__class__.__name__
-        if shell == 'ZMQInteractiveShell':
-            return True  # Jupyter notebook or qtconsole
-        elif shell == 'TerminalInteractiveShell':
-            return False  # Terminal running IPython
-        else:
-            return False  # Other type (?)
-    except NameError:
-        return False  # Probably standard Python interpreter
+class AdvanceProgressBarCallback:
+    def __call__(self, study: optuna.study.Study, trial: optuna.trial.FrozenTrial) -> None:
+        utils.pbar.update(1)
 
-
-if is_notebook():
-    from tqdm import tqdm_notebook as tqdm
-else:
-    from tqdm import tqdm
 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
@@ -178,31 +168,24 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     lst = []
     lst_prob = []
 
-    if lime_results is None:
-        print("###############################################################################")
-        print("********* LIME results will not be saved as the path is not specified *********")
-        print("###############################################################################")
-    else:
+    if lime_results is not None:
         if not os.path.exists(lime_results):
-            os.makedirs(lime_results)
-        print("#############################################################")
-        print("***************** Saving LIME results ***********************")
-        print("#############################################################")
-        with tqdm(total=min(len(ind_test), len(X_test))) as pbar:
-            for i, j in zip(ind_test, X_test):
-                explainer.explain_instance(j, best_clf.predict_proba, num_features=10).save_to_file(
-                    lime_results + '/Lime_' + slugify(str(i)) + '.html'
-                )
-                pbar.update(1)
+            os.makedirs(lime_results, exist_ok=True)
 
+    utils.pbar.total += min(len(ind_test), len(X_test))
+    utils.pbar.update(0)
+    utils.pbar.set_description('LIME explanations', refresh=True)
     for i, j in zip(ind_test, X_test):
         exp = explainer.explain_instance(j, best_clf.predict_proba, num_features=10)
+        if lime_results is not None:
+            exp.save_to_file(lime_results + '/Lime_' + slugify(str(i)) + '.html')
         df = pd.DataFrame(exp.as_list())
         df['index'] = i
         lst.append(df)
         df2 = pd.DataFrame(exp.predict_proba.tolist())
         df2['index'] = i
         lst_prob.append(df2)
+        utils.pbar.update(1)
 
     df1 = pd.concat(lst)
     df1.loc[:, 'run_id'] = st
@@ -262,26 +245,23 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         # print("---------------- Random Forest Classification with Stratified shuffle split -----------------------")
         # print(model)
         if model == 'Random Forest':
-            print('Random Forest Classifier')
+            # print('Random Forest Classifier')
             estimator = RandomForestClassifier(max_depth=4, random_state=0)
         elif model == 'AdaBoost':
-            print('AdaBoost Classifier')
+            # print('AdaBoost Classifier')
             estimator = AdaBoostClassifier(random_state=0)
         elif model == 'Gradient Boosting':
-            print('Gradient Boosting Classifier')
+            # print('Gradient Boosting Classifier')
             estimator = GradientBoostingClassifier(random_state=0)
 
         cv = StratifiedShuffleSplit(n_splits=cross_validation, test_size=test_split, random_state=123)
         important_features = set()
         important_features_size = imp_features
-        print("###########################################################################")
-        print("************** Classification report for every iteration ******************")
-        print("###########################################################################")
+
+        # Classification report for every iteration
         for i, (train, test) in enumerate(cv.split(X_input, y_input)):
             estimator.fit(X_input[train], y_input[train])
-            y_predicted = estimator.predict(X_input[test])
-
-            print(classification_report(y_input[test], y_predicted))
+            y_predicted = estimator.predict(X_input[test])  # TODO: Is it necessary to do the prediction here if nothing happens with the prediction?
 
             fea_importance = estimator.feature_importances_
             indices = np.argsort(fea_importance)[::-1]
@@ -301,11 +281,13 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
 
     feature_names = new_sampled_data.columns
 
+    utils.pbar.total += 100
+    utils.pbar.set_description('Model Training', refresh=True)
     with stats.measure_time('PIPE_TRAIN_MODEL'):
         # Hyperparameter Optimization using AutoML
         study = optuna.create_study(direction="maximize")
         automl_optuna = AutoMLOptuna(min_max_depth, max_max_depth, X_train, y_train)
-        study.optimize(automl_optuna, n_trials=100)
+        study.optimize(automl_optuna, n_trials=100, callbacks=[AdvanceProgressBarCallback()])
         # print(study.best_value)
         # print(study.best_params)
         params = study.best_params
@@ -339,21 +321,19 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
 
     lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, classes, st, lime_results)
 
+    # Saving the classification report
     with stats.measure_time('PIPE_OUTPUT'):
-        print("#########################################################################################")
-        print("****************** Classification report saved in output folder *************************")
-        print("#########################################################################################")
-
         report = classification_report(y_test, y_pred, target_names=classes, output_dict=True)
         classificationreport = pd.DataFrame(report).transpose()
         classificationreport.loc[:, 'run_id'] = st
         classificationreport = classificationreport.reset_index()
         classificationreport = classificationreport.rename(columns={classificationreport.columns[0]: 'classes'})
-        print(classificationreport)
+        # print(classificationreport)
         report = classificationreport.iloc[:-3, :]
         # print(report)
         report.to_csv("interpretme/files/precision_recall.csv", index=False)
 
+    utils.pbar.set_description('Preparing Plots Data', refresh=True)
     with stats.measure_time('PIPE_DTREEVIZ'):
         bool_feature = []
         for feature in new_sampled_data.columns:
@@ -367,9 +347,9 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
                                     feature_names=feature_names, class_names=classes, fancy=True,
                                     show_root_edge_labels=True, bool_feature=bool_feature)
         results['dtree'] = viz
+    utils.pbar.update(1)
 
     return new_sampled_data, best_clf, results
-
 
 
 def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
@@ -413,26 +393,23 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
     with stats.measure_time('PIPE_IMPORTANT_FEATURES'):
         # print("---------------- Random Forest Classification with Stratified shuffle split -----------------------")
         if model == 'Random Forest':
-            print('Random Forest Classifier')
+            # print('Random Forest Classifier')
             estimator = RandomForestClassifier(max_depth=4, random_state=0)
         elif model == 'AdaBoost':
-            print('AdaBoost Classifier')
+            # print('AdaBoost Classifier')
             estimator = AdaBoostClassifier(random_state=0)
         elif model == 'Gradient Boosting':
-            print('Gradient Boosting Classifier')
+            # print('Gradient Boosting Classifier')
             estimator = GradientBoostingClassifier(random_state=0)
 
         cv = StratifiedShuffleSplit(n_splits=cv, test_size=test_split, random_state=123)
         important_features = set()
         important_features_size = imp_features
-        print("#################################################################################")
-        print("************** Classification report for every iteration ************************")
-        print("#################################################################################")
+
+        # Classification report for every iteration
         for i, (train, test) in enumerate(cv.split(X_input, y_input)):
             estimator.fit(X_input[train], y_input[train])
-            y_predicted = estimator.predict(X_input[test])
-
-            print(classification_report(y_input[test], y_predicted))
+            y_predicted = estimator.predict(X_input[test])  # TODO: Is it necessary to do the prediction here if nothing happens with the prediction?
 
             fea_importance = estimator.feature_importances_
             indices = np.argsort(fea_importance)[::-1]
@@ -494,17 +471,14 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
 
     lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, classes, st, lime_results)
 
+    # Saving the classification report
     with stats.measure_time('PIPE_OUTPUT'):
-        print("#########################################################################################")
-        print("****************** Classification report saved in output folder *************************")
-        print("#########################################################################################")
-
         report = classification_report(y_test, y_pred, target_names=classes, output_dict=True)
         classificationreport = pd.DataFrame(report).transpose()
         classificationreport.loc[:, 'run_id'] = st
         classificationreport = classificationreport.reset_index()
         classificationreport = classificationreport.rename(columns={classificationreport.columns[0]: 'classes'})
-        print(classificationreport)
+        # print(classificationreport)
         report = classificationreport.iloc[:-3, :]
         report.to_csv("interpretme/files/precision_recall.csv", index=False)
 

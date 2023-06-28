@@ -107,8 +107,8 @@ def load_data(seed_var, dependent_var, classes, annotated_dataset):
         Returns preprocessed dataset.
 
     """
-    print("--------- Preprocessing Data --------------")
-    print(annotated_dataset)
+    # print("--------- Preprocessing Data --------------")
+    # print(annotated_dataset)
     encode_target = define_class(classes, dependent_var, annotated_dataset)
     ann_data = annotated_dataset.drop(dependent_var, axis=1)
     encode_data = hot_encode(ann_data, seed_var)

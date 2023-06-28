@@ -22,14 +22,8 @@ def upload_to_virtuoso(run_id, rdf_file, server_url, username, password):
     password : str
         Password of virtuoso.
 
-    Returns
-    -------
-
     """
     # server_url does not end with /sparql
-    print("#####################################################################")
-    print("******************* Uploading to Virtuoso **************************")
-    print("#####################################################################")
     address = server_url + 'DAV/home/' + username + '/rdf_sink/' + str(run_id) + '.ttl'
     with open(rdf_file, 'r') as f:
         r = requests.put(

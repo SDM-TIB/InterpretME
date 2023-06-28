@@ -60,12 +60,8 @@ def federated(query, configuration=ConfigFile('./rdfmts.json')):
     -------
 
     """
-    print("#####################################################################")
-    print("********************* Federated Query Engine ************************")
-    print("#####################################################################")
     service = True if re_service.match(query) else False
     query_result = run_query(query, sparql_one_dot_one=service, config=configuration)
-    print(query_result)
     return query_result
 
 

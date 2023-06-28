@@ -1,6 +1,8 @@
 import hashlib
 import json
 import os.path
+import os
+import sys
 import time
 from pathlib import Path
 import csv
@@ -16,6 +18,8 @@ from validating_models.shacl_validation_engine import ReducedTravshaclCommunicat
 from InterpretME import preprocessing_data, sampling_strategy, classification
 from InterpretME.semantification import rdf_semantification
 from InterpretME.upload import upload_to_virtuoso
+
+import InterpretME.utils as utils
 
 
 def constraint_md5_sum(constraint):
@@ -45,11 +49,11 @@ def read_dataset(input_data,st):
     if os.path.splitext(path)[1].lower() == '.json':
         with stats.measure_time('PIPE_DATASET_EXTRACTION'):
             annotated_dataset = pd.read_json(path)
-            print("Reading the data in json format", annotated_dataset)
+            # print("Reading the data in json format", annotated_dataset)
     else:  # assuming CSV
         with stats.measure_time('PIPE_DATASET_EXTRACTION'):
             annotated_dataset = pd.read_csv(path)
-            print("Reading the data in csv format")
+            # print("Reading the data in csv format")
     seed_var = input_data['Index_var']
     sampling = input_data['sampling_strategy']
     cv = input_data['cross_validation_folds']
@@ -146,7 +150,7 @@ def read_KG(input_data, st):
 
         query_where_clause = query_where_clause + "}"
         sparqlQuery = query_select_clause + " " + query_where_clause
-        print(sparqlQuery)
+        # print(sparqlQuery)
 
         features = independent_var + dependent_var
 
@@ -159,7 +163,7 @@ def read_KG(input_data, st):
                     for binding in results['results']['bindings']]
         df = pd.DataFrame.from_dict(bindings)
         for column in df.columns:
-            df[column] = df[column].str.rsplit('/', n=1).str[-1]
+            df[column] = df[column].str.rsplit('/', 1).str[-1]
         return df
 
     with stats.measure_time('PIPE_DATASET_EXTRACTION'):
@@ -170,10 +174,13 @@ def read_KG(input_data, st):
     constraints = [ShaclSchemaConstraint.from_dict(constraint) for constraint in input_data['Constraints']]
     constraint_identifiers = [constraint_md5_sum(constraint) for constraint in constraints]
 
+    utils.pbar.total += len(constraints)
+    utils.pbar.set_description('SHACL Validation', refresh=True)
     with stats.measure_time('PIPE_SHACL_VALIDATION'):
         shacl_validation_results = base_dataset.get_shacl_schema_validation_results(
                 constraints, rename_columns=True, replace_non_applicable_nans=True
         )
+    utils.pbar.update(len(constraints))
 
     sample_to_node_mapping = base_dataset.get_sample_to_node_mapping().rename('node')
 
@@ -236,7 +243,6 @@ def read_KG(input_data, st):
     return seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, input_data['3_valued_logic'], sampling, test_split, num_imp_features, train_model, cv, min_max_depth, max_max_depth
 
 
-
 # get the start time and use it as run_id
 def current_milli_time():
     return round(time.time() * 1000)
@@ -283,13 +289,13 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
 
     """
     st = current_milli_time()
-    print(st)
-
     results = {'run_id': st}
+
+    utils.pbar = utils.tqdm(total=5, miniters=1, desc='InterpretME Pipeline', unit='task')
 
     if not os.path.exists('interpretme/files'):
         os.makedirs('interpretme/files')
-        print("The directory for files is created")
+        # print("The directory for files is created")
 
     stats.STATS_COLLECTOR.activate(hyperparameters=[])
     stats.STATS_COLLECTOR.new_run(hyperparameters=[])
@@ -297,17 +303,16 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
     with open(path_config, "r") as input_file_descriptor:
         input_data = json.load(input_file_descriptor)
 
+    utils.pbar.set_description('Read input data', refresh=True)
     input_is_kg = None
     if "Endpoint" in input_data.keys() and "path_to_data" not in input_data.keys():
         # input from SPARQL endpoint
         input_is_kg = True
         seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, samplingstrategy, train_test_split, num_imp_features, train_model, cross_validation, min_max_depth, max_max_depth = read_KG(input_data, st)
-
     elif "Endpoint" not in input_data.keys() and "path_to_data" in input_data.keys():
         # input from dataset
         input_is_kg = False
         seed_var, independent_var, dependent_var, classes, class_names, st, sampling, test_split, num_imp_features, train_model, cv, annotated_dataset, min_max_depth, max_max_depth = read_dataset(input_data, st)
-
     else:
         # error
         raise Exception("Please provide either SPARQL endpoint or Dataset")
@@ -351,18 +356,25 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
         model = train_model
     else:
         model = model
+    utils.pbar.update(1)  # end of reading the input dataset
 
+    utils.pbar.set_description('Preprocessing', refresh=True)
     with stats.measure_time('PIPE_PREPROCESSING'):
         encoded_data, encode_target = preprocessing_data.load_data(seed_var, dependent_var, classes, annotated_dataset)
+    utils.pbar.update(1)
 
+    utils.pbar.set_description('Sampling', refresh=True)
     with stats.measure_time('PIPE_SAMPLING'):
         sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target, sampling, results)
+    utils.pbar.update(1)
 
     new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth)
     processed_df = pd.concat((new_sampled_data, sampled_target), axis='columns')
     processed_df.reset_index(inplace=True)
 
     if "Endpoint" in input_data.keys() and "path_to_data" not in input_data.keys():
+        utils.pbar.total += 1
+        utils.pbar.set_description('Preparing Plots Data', refresh=True)
         with stats.measure_time('PIPE_CONSTRAINT_VIZ'):
             processedDataset = ProcessedDataset.from_node_unique_columns(
                 processed_df,
@@ -379,21 +391,29 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
             results['shadow_tree'] = shadow_tree
             results['constraints'] = constraints
             results['non_applicable_counts'] = non_applicable_counts
-
-    with stats.measure_time('PIPE_InterpretMEKG_SEMANTIFICATION'):
-        rdf_semantification(input_is_kg)
+        utils.pbar.update(1)
 
     categories_stats = ['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
                         'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_TRAIN_MODEL',
                         'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join',
                         'PIPE_InterpretMEKG_SEMANTIFICATION']
 
+    utils.pbar.set_description('Semantifying Results', refresh=True)
+    with stats.measure_time('PIPE_InterpretMEKG_SEMANTIFICATION'):
+        rdf_semantification(input_is_kg)
+    utils.pbar.update(1)
+
     if server_url is not None and username is not None and password is not None:
         categories_stats.append('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO')
+        utils.pbar.total += 1
+        utils.pbar.set_description('Uploading to Virtuoso', refresh=True)
         with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
             upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
                                server_url=server_url, username=username, password=password)
+        utils.pbar.update(1)
 
     stats.STATS_COLLECTOR.to_file('times.csv', categories=categories_stats)
 
+    utils.pbar.set_description('InterpretME Pipeline')
+    utils.pbar.close()
     return results
