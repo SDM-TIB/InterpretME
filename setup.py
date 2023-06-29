@@ -3,16 +3,19 @@ from setuptools import setup
 with open("LIBRARY.md", "r", encoding="utf8") as fh:
     long_description = fh.read()
 
+VERSION = '1.3.0'
+
 setup(
     name='InterpretME',
     packages=['InterpretME'],
-    version='1.2.2',
+    version=VERSION,
     description='An interpretable machine learning pipeline over knowledge graphs',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Yashraj Chudasama, Disha Purohit, Philipp Rohde, Julian Gercke',
     author_email='yashraj.chudasama@tib.eu',
     url='https://github.com/SDM-TIB/InterpretME',
+    download_url='https://github.com/SDM-TIB/InterpretME/archive/refs/tags/v' + VERSION + '.tar.gz',
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3",
