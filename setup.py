@@ -43,6 +43,7 @@ setup(
         'rdfizer>=4.5.5',
         'DeTrusty>=0.12.2',
         'validating-models>=0.9.5',
-        'optuna>=3.2.0'
+        'optuna>=3.2.0',
+        'scikit-learn>=1.2.0'
     ]
 )
