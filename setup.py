@@ -27,7 +27,7 @@ setup(
     ],
     python_requires='>=3.8, <3.10',
     install_requires=[
-        'pandas>=2.0.0',
+        'pandas>=1.4.0,<2.0.0',
         'imbalanced-learn>=0.9.0',
         'lime>=0.2.0',
         'pydotplus>=2.0.2',
