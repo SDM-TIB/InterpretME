@@ -1,8 +1,9 @@
 import os
-import optuna
+
 import lime
 import lime.lime_tabular
 import numpy as np
+import optuna
 import pandas as pd
 import sklearn
 import validating_models.stats as stats
@@ -13,8 +14,8 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.model_selection import train_test_split
 from slugify import slugify
 
-from . import dtreeviz_lib
 import InterpretME.utils as utils
+from . import dtreeviz_lib
 
 optuna.logging.set_verbosity(optuna.logging.ERROR)
 

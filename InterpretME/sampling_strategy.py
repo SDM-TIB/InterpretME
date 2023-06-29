@@ -1,6 +1,6 @@
 import pandas as pd
-from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
 
 
 def sampling_strategy(encode_data, encode_target, strategy, results):

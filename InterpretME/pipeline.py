@@ -1,11 +1,10 @@
 import hashlib
 import json
-import os.path
 import os
-import sys
+import os.path
 import time
 from pathlib import Path
-import csv
+
 import pandas as pd
 import validating_models.stats as stats
 from pkg_resources import resource_filename
@@ -15,11 +14,10 @@ from validating_models.dataset import BaseDataset, ProcessedDataset
 from validating_models.models.decision_tree import get_shadow_tree_from_checker
 from validating_models.shacl_validation_engine import ReducedTravshaclCommunicator
 
+import InterpretME.utils as utils
 from InterpretME import preprocessing_data, sampling_strategy, classification
 from InterpretME.semantification import rdf_semantification
 from InterpretME.upload import upload_to_virtuoso
-
-import InterpretME.utils as utils
 
 
 def constraint_md5_sum(constraint):

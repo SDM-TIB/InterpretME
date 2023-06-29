@@ -1,10 +1,10 @@
+import re
+
+import pandas as pd
+from DeTrusty import run_query
 from DeTrusty.Molecule.MTCreation import create_rdfmts
 from DeTrusty.Molecule.MTManager import ConfigFile
-from DeTrusty import run_query
 from pkg_resources import resource_filename
-import re
-import pandas as pd
-
 
 re_service = re.compile(r".*[^:][Ss][Ee][Rr][Vv][Ii][Cc][Ee]\s*<.+>\s*{.*", flags=re.DOTALL)
 

@@ -1,8 +1,8 @@
-from rdfizer import semantify
 import validating_models.stats as stats
 from pkg_resources import resource_filename
-from InterpretME.utils import HiddenPrints
+from rdfizer import semantify
 
+from InterpretME.utils import HiddenPrints
 
 semantification = stats.get_decorator('PIPE_InterpretMEKG_SEMANTIFICATION')
 

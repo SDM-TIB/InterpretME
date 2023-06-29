@@ -1,6 +1,6 @@
 import requests
-from requests.auth import HTTPBasicAuth
 import validating_models.stats as stats
+from requests.auth import HTTPBasicAuth
 
 uploading = stats.get_decorator('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO')
 
