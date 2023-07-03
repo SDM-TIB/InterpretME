@@ -74,7 +74,7 @@ def federated(query, configuration=ConfigFile('./rdfmts.json')):
 
     """
     service = True if re_service.match(query) else False
-    query_result = run_query(query, sparql_one_dot_one=service, config=configuration)
+    query_result = run_query(query, sparql_one_dot_one=service, config=configuration, join_stars_locally=False)
 
     columns = query_result['head']['vars']
     df_result = pd.DataFrame(columns=columns)
