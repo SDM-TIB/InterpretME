@@ -55,7 +55,7 @@
                         ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{index}_{run_id}";
-        rr:class intr:TestedTargetEntity
+        rr:class intr:TargetEntity, intr:TestedTargetEntity
       ];    
     rr:predicateObjectMap [
         rr:predicate intr:hasEntityClassProbability;
