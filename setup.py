@@ -47,6 +47,6 @@ setup(
         'DeTrusty>=0.12.3',
         'validating-models>=0.9.5',
         'optuna>=3.2.0',
-        'scikit-learn>=1.2.0'
+        'scikit-learn>=1.2.0,<1.3.0'
     ]
 )
