@@ -8,6 +8,10 @@
 [![Package Status](https://img.shields.io/pypi/status/InterpretME)](https://pypi.org/project/InterpretME)
 [![Package Version](https://img.shields.io/pypi/v/InterpretME)](https://pypi.org/project/InterpretME)
 
+<br>**Demo:**<br>
+[![GitHub](https://img.shields.io/badge/GitHub-SDM--TIB%2FInterpretME__Demo-blue?logo=GitHub)](https://github.com/SDM-TIB/InterpretME_Demo)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SDM-TIB/InterpretME_Demo/main?labpath=InterpretME_Demo.ipynb)
+
 # InterpretME
 
 ![InterpretME Architecture](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/architecture.png "InterpretME Architecture")
