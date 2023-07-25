@@ -31,7 +31,7 @@ setup(
     python_requires='>=3.8, <3.10',
     install_requires=[
         'pandas>=1.4.0,<2.0.0',
-        'imbalanced-learn>=0.9.0',
+        'imbalanced-learn>=0.11.0',
         'lime>=0.2.0',
         'pydotplus>=2.0.2',
         'svglib>=1.2.1',
@@ -47,6 +47,6 @@ setup(
         'DeTrusty>=0.12.3',
         'validating-models>=0.9.5',
         'optuna>=3.2.0',
-        'scikit-learn>=1.2.0,<1.3.0'
+        'scikit-learn>=1.3.0'
     ]
 )
