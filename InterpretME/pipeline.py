@@ -153,8 +153,16 @@ def read_KG(input_data, st):
         features = independent_var + dependent_var
 
         shacl_engine_communicator = ReducedTravshaclCommunicator(
-        '', endpoint, resource_filename('InterpretME', 'shacl_api_config.json')
-           )
+            '', endpoint,
+            {
+                "backend": "travshacl",
+                "start_with_target_shape": True,
+                "replace_target_query": True,
+                "prune_shape_network": True,
+                "output_format": "simple",
+                "outputs": False
+            }
+        )
 
     def hook(results):
         bindings = [{key: value['value'] for key, value in binding.items()}
