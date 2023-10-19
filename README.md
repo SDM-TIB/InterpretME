@@ -12,7 +12,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-SDM--TIB%2FInterpretME__Demo-blue?logo=GitHub)](https://github.com/SDM-TIB/InterpretME_Demo)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SDM-TIB/InterpretME_Demo/main?labpath=InterpretME_Demo.ipynb)
 
-# InterpretME
+# <img src="https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/logo.png" alt="logo" width="100"/> InterpretME
 
 ![InterpretME Architecture](https://raw.githubusercontent.com/SDM-TIB/InterpretME/main/images/architecture.png "InterpretME Architecture")
 
