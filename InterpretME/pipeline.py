@@ -314,7 +314,7 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
     if "Endpoint" in input_data.keys() and "path_to_data" not in input_data.keys():
         # input from SPARQL endpoint
         input_is_kg = True
-        seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, samplingstrategy, train_test_split, num_imp_features, train_model, cross_validation, min_max_depth, max_max_depth = read_KG(input_data, st)
+        seed_var, independent_var, dependent_var, classes, class_names, annotated_dataset, constraints, base_dataset, st, non_applicable_counts, sampling, train_test_split, num_imp_features, train_model, cross_validation, min_max_depth, max_max_depth = read_KG(input_data, st)
     elif "Endpoint" not in input_data.keys() and "path_to_data" in input_data.keys():
         # input from dataset
         input_is_kg = False
