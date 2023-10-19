@@ -324,7 +324,7 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
         raise Exception("Please provide either SPARQL endpoint or Dataset")
 
     if sampling is None:
-        sampling = samplingstrategy
+        sampling = "None"
     else:
         sampling = sampling
 
@@ -371,7 +371,10 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
 
     utils.pbar.set_description('Sampling', refresh=True)
     with stats.measure_time('PIPE_SAMPLING'):
-        sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target, sampling, results)
+        if sampling == "None":
+            sampled_data, sampled_target = encoded_data, encode_target
+        else:
+            sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target,sampling, results)
     utils.pbar.update(1)
 
     new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth)
