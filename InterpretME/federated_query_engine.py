@@ -3,7 +3,7 @@ import re
 import pandas as pd
 from DeTrusty import run_query
 from DeTrusty.Molecule.MTCreation import create_rdfmts
-from DeTrusty.Molecule.MTManager import ConfigFile
+from DeTrusty.Molecule.MTManager import Config
 from pkg_resources import resource_filename
 
 re_service = re.compile(r".*[^:][Ss][Ee][Rr][Vv][Ii][Cc][Ee]\s*<.+>\s*{.*", flags=re.DOTALL)
@@ -23,7 +23,7 @@ def configuration(interpretme_endpoint, input_endpoint):
 
     Returns
     -------
-    ConfigFile
+    Config
         An instance of ConfigFile holding the source descriptions of the federation
         containing the InterpretME KG and the input KG.
 
@@ -50,11 +50,10 @@ def configuration(interpretme_endpoint, input_endpoint):
         input_endpoint: {}
     }
 
-    create_rdfmts(endpoints_dict, './rdfmts.json')
-    return ConfigFile('./rdfmts.json')
+    return create_rdfmts(endpoints_dict, None)
 
 
-def federated(query, configuration=ConfigFile('./rdfmts.json')):
+def federated(query, configuration=Config()):
     """
     Executes a SPARQL query using the federated query engine DeTrusty.
 
@@ -64,8 +63,8 @@ def federated(query, configuration=ConfigFile('./rdfmts.json')):
         Input query.
     configuration : ConfigFile, OPTIONAL
         The ConfigFile object holding the source descriptions for the federated query engine.
-        If no source descriptions are provided, the federated query engine will not be able
-        to federate a query without SERVICE clause.
+        If no source description is provided, the federated query engine will not be able
+        to execute a query without SERVICE clause.
 
     Returns
     -------
