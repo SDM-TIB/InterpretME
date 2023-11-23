@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 import validating_models.stats as stats
-from pkg_resources import resource_filename
 from validating_models.checker import Checker
 from validating_models.constraint import ShaclSchemaConstraint
 from validating_models.dataset import BaseDataset, ProcessedDataset
@@ -47,11 +46,9 @@ def read_dataset(input_data,st):
     if os.path.splitext(path)[1].lower() == '.json':
         with stats.measure_time('PIPE_DATASET_EXTRACTION'):
             annotated_dataset = pd.read_json(path)
-            # print("Reading the data in json format", annotated_dataset)
     else:  # assuming CSV
         with stats.measure_time('PIPE_DATASET_EXTRACTION'):
             annotated_dataset = pd.read_csv(path)
-            # print("Reading the data in csv format")
     seed_var = input_data['Index_var']
     sampling = input_data['sampling_strategy']
     cv = input_data['cross_validation_folds']
@@ -103,8 +100,8 @@ def read_KG(input_data, st):
 
     Parameters
     ----------
-    input_file : str
-        Input configuration file (JSON).
+    input_data : dict
+        Input configuration (JSON).
     st : int
         Unique identifier as run id.
 
@@ -148,7 +145,6 @@ def read_KG(input_data, st):
 
         query_where_clause = query_where_clause + "}"
         sparqlQuery = query_select_clause + " " + query_where_clause
-        # print(sparqlQuery)
 
         features = independent_var + dependent_var
 
@@ -301,7 +297,6 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
 
     if not os.path.exists('interpretme/files'):
         os.makedirs('interpretme/files')
-        # print("The directory for files is created")
 
     stats.STATS_COLLECTOR.activate(hyperparameters=[])
     stats.STATS_COLLECTOR.new_run(hyperparameters=[])
