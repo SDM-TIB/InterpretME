@@ -1,103 +1,99 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix rml: <http://semweb.mmlab.be/ns/rml#> .
 @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix schema: <http://schema.org/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix mls: <http://www.w3.org/ns/mls#> .
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <RunInfo>
-    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{run_id}";
         rr:class mls:Run
-    ];      
+    ];
     rr:predicateObjectMap [
         rr:predicate mls:executes;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{run_id}_{model}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}_{model}"
         ]
     ];
-  rr:predicateObjectMap [
+    rr:predicateObjectMap [
         rr:predicate mls:realizes;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{model}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{model}"
         ]
-    ]. 
+    ].
 
 <ModelDetails>
-	rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{run_id}_{model}";
         rr:class mls:Implementation
-    ];      
+    ];
     rr:predicateObjectMap [
         rr:predicate mls:hasInput;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{run_id}_{model}_{hyperparameters_name}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}_{model}_{hyperparameters_name}"
         ]
-    ]; 
-  
+    ];
     rr:predicateObjectMap [
         rr:predicate mls:implements;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{model}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{model}"
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate mls:hasOutput;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{run_id}_{model}_accuracy";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}_{model}_accuracy"
         ]
     ].
 
 <Accuracy>
-    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{run_id}_{model}_accuracy";
         rr:class mls:ModelEvaluation
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate mls:specifiedBy;
         rr:objectMap [
-        rr:constant "http://interpretme.org/entity/predictiveAccuracy"
+            rr:constant "http://interpretme.org/entity/predictiveAccuracy"
         ]
     ];
     rr:predicateObjectMap [
         rr:predicate mls:hasValue;
         rr:objectMap [
-        rml:reference "accuracy"
+            rml:reference "accuracy"
         ]
     ].
 
 <HyperparameterSetting>
-    rml:logicalSource [ rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/model_accuracy_hyperparameters.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{run_id}_{model}_{hyperparameters_name}";
         rr:class mls:HyperParameterSetting
-    ]; 
+    ];
     rr:predicateObjectMap [
-        rr:predicate mls:hasHyperParamter;
+        rr:predicate mls:hasHyperParameter;
         rr:objectMap [
-        rr:template "http://interpretme.org/entity/{hyperparameters_name}"
+            rr:template "http://interpretme.org/entity/{hyperparameters_name}"
         ]
     ];
     rr:predicateObjectMap [
         rr:predicate mls:hasValue;
         rr:objectMap [
-        rml:reference "hyperparameters_value"
+            rml:reference "hyperparameters_value"
         ]
     ].
-

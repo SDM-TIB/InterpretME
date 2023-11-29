@@ -1,98 +1,91 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix rml: <http://semweb.mmlab.be/ns/rml#> .
 @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <LimeFeatures>
-    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/lime_interpretation_features.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{index}_{features}_{weights}_{run_id}_{tool}";
         rr:class intr:PredictionFeatures
-    ];      
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasEntity;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{index}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{index}"
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasFeatureWeight;
-        rr:objectMap [ 
+        rr:objectMap [
             rr:parentTriplesMap <FeatureWeight>
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasRun;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{run_id}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}"
         ]
-    ]; 
-
+    ];
     rr:predicateObjectMap [
         rr:predicate prov:hasGeneratedBy;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{tool}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{tool}"
         ]
     ].
- 
 
 <FeatureWeight>
-    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
-    rml:referenceFormulation ql:CSV;
-                        ];
-
+    rml:logicalSource [
+        rml:source "interpretme/files/lime_interpretation_features.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{features}_{weights}_{tool}_{run_id}";
         rr:class intr:FeaturesWeights
     ];
-
     rr:predicateObjectMap [
         rr:predicate intr:hasFeature;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{features}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{features}"
         ]
-    ];  
-
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasWeight;
-        rr:objectMap [ 
+        rr:objectMap [
             rml:reference "weights";
             rr:datatype xsd:float
         ]
-    ]; 
-     rr:predicateObjectMap [
+    ];
+    rr:predicateObjectMap [
         rr:predicate prov:hasGeneratedBy;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{tool}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{tool}"
         ]
     ];
-     rr:predicateObjectMap [
+    rr:predicateObjectMap [
         rr:predicate intr:hasRun;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{run_id}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}"
         ]
     ].
 
- <EntityFeaturesWeights>
-    rml:logicalSource [ rml:source "interpretme/files/lime_interpretation_features.csv";
-    rml:referenceFormulation ql:CSV;
-                        ];
+<EntityFeaturesWeights>
+    rml:logicalSource [
+        rml:source "interpretme/files/lime_interpretation_features.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{index}_{run_id}";
         rr:class intr:TargetEntity, intr:TestedTargetEntity
-      ];    
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasInterpretedFeature;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{index}_{features}_{weights}_{run_id}_{tool}";  
-        ]   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{index}_{features}_{weights}_{run_id}_{tool}"
+        ]
     ].
-     

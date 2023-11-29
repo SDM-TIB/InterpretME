@@ -1,66 +1,63 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix rml: <http://semweb.mmlab.be/ns/rml#> .
 @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix intr: <http://interpretme.org/vocab/> .
 
 <PredictionProbability>
-    rml:logicalSource [ rml:source "interpretme/files/predicition_probabilities.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+    rml:logicalSource [
+        rml:source "interpretme/files/predicition_probabilities.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbabilities}_{tool}_{run_id}";
         rr:class intr:PredictionInterpretability
-    ];      
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasEntity;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{index}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{index}"
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasClass;
-        rr:objectMap [ 
-            rr:template "http://interpretme.org/entity/{class}";
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{class}"
         ]
-    ]; 
- rr:predicateObjectMap [
+    ];
+    rr:predicateObjectMap [
         rr:predicate intr:hasPredictionProbability;
-        rr:objectMap [ 
+        rr:objectMap [
             rml:reference "PredictionProbabilities";
             rr:datatype xsd:float
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate prov:hasGeneratedBy;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{tool}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{tool}"
         ]
-    ]; 
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasRun;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{run_id}";   
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}"
         ]
     ].
- 
- <EntityClassProbability>
-    rml:logicalSource [ rml:source "interpretme/files/predicition_probabilities.csv";
-                        rml:referenceFormulation ql:CSV;
-                        ];
+
+<EntityClassProbability>
+    rml:logicalSource [
+        rml:source "interpretme/files/predicition_probabilities.csv";
+        rml:referenceFormulation ql:CSV
+    ];
     rr:subjectMap [
         rr:template "http://interpretme.org/entity/{index}_{run_id}";
         rr:class intr:TargetEntity, intr:TestedTargetEntity
-      ];    
+    ];
     rr:predicateObjectMap [
         rr:predicate intr:hasEntityClassProbability;
-        rr:objectMap [ 
-        rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbabilities}_{tool}_{run_id}";
-          
-        ]   
-    ]. 
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{index}_{class}_{PredictionProbabilities}_{tool}_{run_id}"
+        ]
+    ].
