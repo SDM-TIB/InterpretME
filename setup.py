@@ -3,7 +3,7 @@ from setuptools import setup
 with open("LIBRARY.md", "r", encoding="utf8") as fh:
     long_description = fh.read()
 
-VERSION = '1.3.2'
+VERSION = '1.3.2-rc2'
 
 setup(
     name='InterpretME',
@@ -43,9 +43,11 @@ setup(
         'dtreeviz>=2.2.0',
         'python-slugify>=6.0.0',
         'requests>=2.31.0',
-        'rdfizer>=4.7.2.7',
-        'DeTrusty>=0.13.0',
-        'validating-models>=0.9.5',
+        'rdfizer>=4.7.2.8',
+        'DeTrusty>=0.14.0',
+        'TravSHACL>=1.7.0',
+        'shaclapi>=0.11.0',
+        'validating-models>=0.9.6',
         'optuna>=3.2.0',
         'scikit-learn>=1.3.0'
     ]

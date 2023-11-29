@@ -1,14 +1,13 @@
-import hashlib
 import json
 import os
 import os.path
 import time
-from pathlib import Path
 
 import pandas as pd
+import validating_models.constraint as vm_constraint
 import validating_models.stats as stats
+from rdflib import Graph, Namespace
 from validating_models.checker import Checker
-from validating_models.constraint import ShaclSchemaConstraint
 from validating_models.dataset import BaseDataset, ProcessedDataset
 from validating_models.models.decision_tree import get_shadow_tree_from_checker
 from validating_models.shacl_validation_engine import ReducedTravshaclCommunicator
@@ -18,28 +17,9 @@ from InterpretME import preprocessing_data, sampling_strategy, classification
 from InterpretME.semantification import rdf_semantification
 from InterpretME.upload import upload_to_virtuoso
 
+VOCAB = Namespace('http://interpretme.org/vocab/')
+ENTITY = Namespace('http://interpretme.org/entity/')
 
-def constraint_md5_sum(constraint):
-    """Generates checksum for SHACL constraints.
-
-    Parameters
-    ----------
-    constraint : ShaclSchemaConstraint
-        List of constraints needs to be checked.
-    Returns
-    -------
-    hash value
-
-    """
-    paths = Path(constraint.shape_schema_dir).glob('**/*')
-    sorted_shape_files = sorted([path for path in paths if path.is_file()])
-    hash_md5 = hashlib.md5()
-    for file in sorted_shape_files:
-        with open(file, 'rb') as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
-    hash_md5.update(constraint.target_shape.encode(encoding='UTF-8', errors='ignore'))
-    return hash_md5.hexdigest()
 
 def read_dataset(input_data,st):
     path = input_data['path_to_data']
@@ -148,18 +128,6 @@ def read_KG(input_data, st):
 
         features = independent_var + dependent_var
 
-        shacl_engine_communicator = ReducedTravshaclCommunicator(
-            '', endpoint,
-            {
-                "backend": "travshacl",
-                "start_with_target_shape": True,
-                "replace_target_query": True,
-                "prune_shape_network": True,
-                "output_format": "simple",
-                "outputs": False
-            }
-        )
-
     def hook(results):
         bindings = [{key: value['value'] for key, value in binding.items()}
                     for binding in results['results']['bindings']]
@@ -168,17 +136,30 @@ def read_KG(input_data, st):
             df[column] = df[column].str.rsplit('/', n=1).str[-1]
         return df
 
-    with stats.measure_time('PIPE_DATASET_EXTRACTION'):
-        base_dataset = BaseDataset.from_knowledge_graph(endpoint, shacl_engine_communicator, sparqlQuery,
-                                                    target_name, seed_var=seed_var,
-                                                    raw_data_query_results_to_df_hook=hook)
+    shacl_engine_communicator = ReducedTravshaclCommunicator(
+        '', endpoint,
+        {
+            "backend": "travshacl",
+            "start_with_target_shape": True,
+            "replace_target_query": True,
+            "prune_shape_network": True,
+            "output_format": "simple",
+            "outputs": False
+        }
+    )
 
-    constraints = [ShaclSchemaConstraint.from_dict(constraint) for constraint in input_data['Constraints']]
-    constraint_identifiers = [constraint_md5_sum(constraint) for constraint in constraints]
+    with stats.measure_time('PIPE_DATASET_EXTRACTION'):
+        base_dataset = BaseDataset.from_knowledge_graph(
+            endpoint, shacl_engine_communicator, sparqlQuery, target_name,
+            seed_var=seed_var, raw_data_query_results_to_df_hook=hook
+        )
+
+    constraints = utils.get_constraints(input_data['Constraints'], run_id=st)
 
     utils.pbar.total += len(constraints)
     utils.pbar.set_description('SHACL Validation', refresh=True)
     with stats.measure_time('PIPE_SHACL_VALIDATION'):
+        vm_constraint.USE_CHECKSUM = True
         shacl_validation_results = base_dataset.get_shacl_schema_validation_results(
                 constraints, rename_columns=True, replace_non_applicable_nans=True
         )
@@ -210,14 +191,14 @@ def read_KG(input_data, st):
 
         dfs_shacl_results = []
 
-        for constraint, identifier in zip(constraints, constraint_identifiers):
-            df6 = pd.DataFrame(annotated_dataset.loc[:, [constraint.name]]).rename(
-                columns={constraint.name: 'SHACL result'})
+        all_shapes_graphs = Graph()
+        for constraint in constraints:
+            df6 = pd.DataFrame(annotated_dataset.loc[:, [constraint.name]]).rename(columns={constraint.name: 'SHACL_Result'})
+            df6['SHACL_Result'] = df6['SHACL_Result'].apply(lambda x: str(x).lower())
             df6['run_id'] = st
-            df6['SHACL schema'] = constraint.shape_schema_dir
-            df6['SHACL shape'] = constraint.target_shape.rsplit('/', 1)[1][:-1]  # remove the prefix from the shape name
-            df6['SHACL constraint name'] = constraint.name
-            df6['constraint identifier'] = identifier
+            df6['SHACL_Schema'] = constraint.shacl_identifier
+            df6['SHACL_Shape'] = constraint.target_shape[1:-1]  # remove brackets
+            df6['SHACL_Schema_Name'] = constraint.name
 
             df6 = df6.reset_index()
             df6 = df6.rename(columns={df6.columns[0]: 'index'})
@@ -225,6 +206,12 @@ def read_KG(input_data, st):
             pd.concat(dfs_shacl_results, axis='rows').to_csv(
                 'interpretme/files/shacl_validation_results.csv', index=False
             )
+
+            shapes_graph = utils.update_schema(constraint.shape_schema_dir, constraint.shacl_identifier, st)
+            all_shapes_graphs += shapes_graph
+        all_shapes_graphs.bind('intrV', VOCAB)
+        all_shapes_graphs.bind('intrE', ENTITY)
+        all_shapes_graphs.serialize('./rdf-dump/shapes_graphs.ttl', format='turtle')
 
         df7 = pd.DataFrame(annotated_dataset.loc[:, ['node']])
         df7['run_id'] = st
@@ -409,9 +396,13 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
 
     if server_url is not None and username is not None and password is not None:
         categories_stats.append('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO')
-        utils.pbar.total += 1
+        utils.pbar.total += 2 if input_is_kg else 1
         utils.pbar.set_description('Uploading to Virtuoso', refresh=True)
         with stats.measure_time('PIPE_InterpretMEKG_UPLOAD_VIRTUOSO'):
+            if input_is_kg:
+                upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/shapes_graphs.ttl',
+                                   server_url=server_url, username=username, password=password)
+                utils.pbar.update(1)
             upload_to_virtuoso(run_id=st, rdf_file='./rdf-dump/interpretme.nt',
                                server_url=server_url, username=username, password=password)
         utils.pbar.update(1)
