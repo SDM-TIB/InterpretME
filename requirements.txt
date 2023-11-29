@@ -11,7 +11,7 @@ requests==2.31.0
 graphviz==0.20.1
 dtreeviz==2.2.1
 python-slugify==6.0.0
-rdfizer==4.7.2.7
+rdfizer==4.7.2.8
 rdflib==6.1.1
 DeTrusty==0.14.0
 validating-models==0.9.5
