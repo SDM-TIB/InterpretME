@@ -44,7 +44,7 @@ setup(
         'python-slugify>=6.0.0',
         'requests>=2.31.0',
         'rdfizer>=4.7.2.8',
-        'DeTrusty>=0.14.0',
+        'DeTrusty>=0.15.0',
         'TravSHACL>=1.7.0',
         'shaclapi>=0.11.0',
         'validating-models>=0.9.6',

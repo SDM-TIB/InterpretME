@@ -1,12 +1,8 @@
-import re
-
 import pandas as pd
 from DeTrusty import run_query
 from DeTrusty.Molecule.MTCreation import create_rdfmts
 from DeTrusty.Molecule.MTManager import Config
 from pkg_resources import resource_filename
-
-re_service = re.compile(r".*[^:][Ss][Ee][Rr][Vv][Ii][Cc][Ee]\s*<.+>\s*{.*", flags=re.DOTALL)
 
 
 def configuration(interpretme_endpoint, input_endpoint):
@@ -72,8 +68,7 @@ def federated(query, configuration=Config()):
         A pandas dataframe which contains the query result.
 
     """
-    service = True if re_service.match(query) else False
-    query_result = run_query(query, sparql_one_dot_one=service, config=configuration, join_stars_locally=False)
+    query_result = run_query(query, config=configuration, join_stars_locally=False)
 
     columns = query_result['head']['vars']
     df_result = pd.DataFrame(columns=columns)
