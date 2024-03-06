@@ -1,5 +1,4 @@
 import os
-
 import lime
 import lime.lime_tabular
 import numpy as np
@@ -16,6 +15,10 @@ from slugify import slugify
 
 import InterpretME.utils as utils
 from . import dtreeviz_lib
+
+import shap
+from shap import TreeExplainer
+import matplotlib.pyplot as plt
 
 optuna.logging.set_verbosity(optuna.logging.ERROR)
 
@@ -57,11 +60,12 @@ class AdvanceProgressBarCallback:
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 time_lime = stats.get_decorator('PIPE_LIME')
+time_shap = stats.get_decorator('PIPE_SHAP')
 time_output = stats.get_decorator('PIPE_OUTPUT')
 
 
 def classify(sampled_data, sampled_target, imp_features, cv, classes,
-             st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth):
+             st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth,shap_results):
     """Selecting classification strategy based on the number of classes provided by the user.
 
     Parameters
@@ -94,10 +98,10 @@ def classify(sampled_data, sampled_target, imp_features, cv, classes,
     """
     if len(classes) == 2:
         new_sampled_data, clf, results = binary_classification(sampled_data, sampled_target, imp_features, cv, classes,
-                                                               st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth)
+                                                               st, lime_results, train_test_split, model, results, min_max_depth, max_max_depth,shap_results)
     else:
         new_sampled_data, clf, results = multiclass(sampled_data, sampled_target, imp_features, cv, classes, st,
-                                                    lime_results, train_test_split, model, results, min_max_depth, max_max_depth)
+                                                    lime_results, train_test_split, model, results, min_max_depth, max_max_depth,shap_results)
     return new_sampled_data, clf, results
 
 
@@ -205,8 +209,61 @@ def lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, c
     return df1
 
 
+@time_shap
+def shap_interpretation(best_clf, new_sampled_data, shap_results, st, classes, X_test):
+    """Generates LIME interpretation results.
+
+    Parameters
+    ----------
+    best_clf : model
+        Best model saved after applying Decision tree.
+    new_sampled_data : dataframe
+        Preprocessed dataset.
+    shap_results : str
+        Path to save SHAP interpretation results.
+    st : int
+        Unique identifier.
+    classes : list
+        A list of classes for classification.
+    X_test : array
+        Testing dataset used to generate SHAP interpretation.
+
+    Returns
+    -------
+    plot
+
+    """
+
+    if shap_results is not None:
+        if not os.path.exists(shap_results):
+            os.makedirs(shap_results, exist_ok=True)
+
+    utils.pbar.total += 1
+    utils.pbar.update(0)
+    utils.pbar.set_description('SHAP explanations', refresh=True)
+    feature = new_sampled_data.columns.values
+
+    explainer = TreeExplainer(best_clf)
+    sv = explainer.shap_values(X_test)
+
+    shap.summary_plot(sv, X_test, feature, plot_type='bar',show=False, class_names=classes)
+    plt.savefig(shap_results+'/SHAP_'+str(st)+'.pdf', format='pdf', dpi=600, bbox_inches='tight')
+
+    shap_sum = np.abs(sv).mean(1)
+    im_df = pd.DataFrame(shap_sum, columns=feature)
+    im_df.reset_index(inplace=True)
+    importance_df = pd.melt(im_df, id_vars='index', var_name='Feature', value_name='SHAP_importance')
+    importance_df.rename(columns={'index': 'class'}, inplace=True)
+    importance_df = importance_df[['Feature', 'class', 'SHAP_importance']]
+    importance_df.loc[:, 'run_id'] = st
+    importance_df['tool'] = 'SHAP'
+    importance_df.to_csv('interpretme/files/SHAP_importance.csv', index=False)
+    utils.pbar.update(1)
+    return importance_df
+
+
 def binary_classification(sampled_data, sampled_target, imp_features, cross_validation,
-                          classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth):
+                          classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth, shap_results):
     """Binary classification technique.
 
     Parameters
@@ -231,6 +288,8 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         Saved best model after applying GridSearch.
     results : dict
         Dictionary to store plots results.
+    shap_results : str
+        Path to save SHAP plots in PDF format.
 
     Returns
     -------
@@ -321,6 +380,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
         res.to_csv('interpretme/files/model_accuracy_hyperparameters.csv')
 
     lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, classes, st, lime_results)
+    shap_interpretation(best_clf, new_sampled_data, shap_results, st, classes, X_test)
 
     # Saving the classification report
     with stats.measure_time('PIPE_OUTPUT'):
@@ -354,7 +414,7 @@ def binary_classification(sampled_data, sampled_target, imp_features, cross_vali
 
 
 def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
-               st, lime_results, test_split, model, results, min_max_depth, max_max_depth):
+               st, lime_results, test_split, model, results, min_max_depth, max_max_depth, shap_results):
     """Multiclass classification technique
 
     Parameters
@@ -379,6 +439,8 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
         Saved best model after applying GridSearch.
     results : dict
         Dictionary to store plots results.
+    shap_results : str
+        Path to save SHAP plots in PDF format.
 
     Returns
     -------
@@ -471,6 +533,7 @@ def multiclass(sampled_data, sampled_target, imp_features, cv, classes,
             res.to_csv('interpretme/files/model_accuracy_hyperparameters.csv', mode='a', header=False)
 
     lime_interpretation(X_train, new_sampled_data, best_clf, ind_test, X_test, classes, st, lime_results)
+    shap_interpretation(best_clf, new_sampled_data, shap_results, st, classes, X_test)
 
     # Saving the classification report
     with stats.measure_time('PIPE_OUTPUT'):

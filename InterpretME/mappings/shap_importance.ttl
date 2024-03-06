@@ -1,0 +1,49 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix intr: <http://interpretme.org/vocab/> .
+
+
+<SHAPFeatures>
+    rml:logicalSource [
+        rml:source "interpretme/files/SHAP_importance.csv";
+        rml:referenceFormulation ql:CSV
+    ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{Feature}_{class}_{tool}_{run_id}";
+        rr:class intr:SHAPFeatureImportance
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasFeature;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{Feature}"
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasClass;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{class}"
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasSHAPImportance;
+        rr:objectMap [
+            rml:reference "SHAP_importance";
+            rr:datatype xsd:float
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate prov:hasGeneratedBy;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{tool}"
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasRun;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}"
+        ]
+    ].
+

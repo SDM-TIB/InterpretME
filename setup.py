@@ -49,6 +49,7 @@ setup(
         'shaclapi>=0.11.0',
         'validating-models>=0.9.6',
         'optuna>=3.2.0',
-        'scikit-learn>=1.3.0'
+        'scikit-learn>=1.3.0',
+        'shap>=0.44.0'
     ]
 )

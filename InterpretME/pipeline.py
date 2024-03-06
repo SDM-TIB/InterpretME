@@ -125,7 +125,6 @@ def read_KG(input_data, st):
 
         query_where_clause = query_where_clause + "}"
         sparqlQuery = query_select_clause + " " + query_where_clause
-
         features = independent_var + dependent_var
 
     def hook(results):
@@ -237,7 +236,7 @@ def current_milli_time():
     return round(time.time() * 1000)
 
 
-def pipeline(path_config, lime_results, server_url=None, username=None, password=None,
+def pipeline(path_config, lime_results, shap_results, server_url=None, username=None, password=None,
              sampling=None, cv=None, imp_features=None, test_split=None, model=None):
     """Executing InterpretME pipeline.
 
@@ -253,6 +252,8 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
         Path to the configuration file from input knowledge graphs.
     lime_results : str
         Path where to store LIME results in HTML format.
+    shapresults : str
+        Path where to store SHAP results in HTML format.
     server_url : str, OPTIONAL
         Server URL to upload the InterpretME knowledge graph.(e.g- Virtuoso)
     username : str, OPTIONAL
@@ -282,8 +283,7 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
 
     utils.pbar = utils.tqdm(total=5, miniters=1, desc='InterpretME Pipeline', unit='task')
 
-    if not os.path.exists('interpretme/files'):
-        os.makedirs('interpretme/files')
+    os.makedirs('interpretme/files', exist_ok=True)
 
     stats.STATS_COLLECTOR.activate(hyperparameters=[])
     stats.STATS_COLLECTOR.new_run(hyperparameters=[])
@@ -359,7 +359,7 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
             sampled_data, sampled_target, results = sampling_strategy.sampling_strategy(encoded_data, encode_target,sampling, results)
     utils.pbar.update(1)
 
-    new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth)
+    new_sampled_data, clf, results = classification.classify(sampled_data, sampled_target, imp_features, cv, classes, st, lime_results, test_split, model, results, min_max_depth, max_max_depth, shap_results)
     processed_df = pd.concat((new_sampled_data, sampled_target), axis='columns')
     processed_df.reset_index(inplace=True)
 
@@ -385,9 +385,8 @@ def pipeline(path_config, lime_results, server_url=None, username=None, password
         utils.pbar.update(1)
 
     categories_stats = ['PIPE_DATASET_EXTRACTION', 'PIPE_SHACL_VALIDATION', 'PIPE_PREPROCESSING',
-                        'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_TRAIN_MODEL',
-                        'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join',
-                        'PIPE_InterpretMEKG_SEMANTIFICATION']
+                        'PIPE_SAMPLING', 'PIPE_IMPORTANT_FEATURES', 'PIPE_LIME', 'PIPE_SHAP', 'PIPE_TRAIN_MODEL',
+                        'PIPE_DTREEVIZ', 'PIPE_CONSTRAINT_VIZ', 'PIPE_OUTPUT', 'join', 'PIPE_InterpretMEKG_SEMANTIFICATION']
 
     utils.pbar.set_description('Semantifying Results', refresh=True)
     with stats.measure_time('PIPE_InterpretMEKG_SEMANTIFICATION'):

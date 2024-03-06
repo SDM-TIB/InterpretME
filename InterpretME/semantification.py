@@ -14,7 +14,7 @@ def rdf_semantification(input_is_kg: bool):
             'main_directory': resource_filename('InterpretME', '')
         },
         'datasets': {
-            'number_of_datasets': '12' if input_is_kg else '8',
+            'number_of_datasets': '13' if input_is_kg else '9',
             'output_folder': './rdf-dump',
             'all_in_one_file': 'yes',
             'remove_duplicate': 'yes',
@@ -54,23 +54,27 @@ def rdf_semantification(input_is_kg: bool):
         'dataset8': {
             'name': 'prediction_probabilities',
             'mapping': '${default:main_directory}/mappings/prediction_probabilities.ttl'
+        },
+        'dataset9': {
+            'name': 'shap_importance',
+            'mapping': '${default:main_directory}/mappings/shap_importance.ttl'
         }
     }
 
     if input_is_kg:
-        config['dataset9'] = {
+        config['dataset10'] = {
             'name': 'endpoint',
             'mapping': '${default:main_directory}/mappings/endpoint.ttl'
         }
-        config['dataset10'] = {
+        config['dataset11'] = {
             'name': 'feature_definition',
             'mapping': '${default:main_directory}/mappings/definition_feature.ttl'
         }
-        config['dataset11'] = {
+        config['dataset12'] = {
             'name': 'shacl_validation_results',
             'mapping': '${default:main_directory}/mappings/shacl_validation_results.ttl'
         }
-        config['dataset12'] = {
+        config['dataset13'] = {
             'name': 'entity_alignment',
             'mapping': '${default:main_directory}/mappings/entity_alignment.ttl'
         }
