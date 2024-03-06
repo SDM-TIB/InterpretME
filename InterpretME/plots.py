@@ -84,7 +84,7 @@ def decision_trees(results, path):
     return file
 
 
-def constraints_decision_trees(results, path, constraint_num):
+def constraints_decision_trees(results, path, constraint_num=None):
     """
 
     Parameters
@@ -93,7 +93,7 @@ def constraints_decision_trees(results, path, constraint_num):
         Dictionary to save results.
     path : str
         Path to save plot results.
-    constraint_num : list
+    constraint_num : list, OPTIONAL
         Number of constraints for saving plots.
 
     Returns
@@ -108,26 +108,30 @@ def constraints_decision_trees(results, path, constraint_num):
     shadow_tree = results['shadow_tree']
     constraints = results['constraints']
     non_applicable_counts = results['non_applicable_counts']
-    num = constraint_num
     files = []
+    if constraint_num is None:
+        constraint_num = []
 
-    for i, constraint in enumerate(constraints, start=1):
-        for x in num:
-            if x == i:
-                plot = constraint_viz.dtreeviz(
-                    shadow_tree, checker, [constraint], coverage=False, non_applicable_counts=non_applicable_counts
-                )
-                plot.save(path + f'/constraint_{i}_validation_dtree_{run}.svg')
-                plot = confusion_matrix_decomposition(
-                    shadow_tree, checker, constraint, non_applicable_counts=non_applicable_counts
-                )
-                plot.save(path + f'/constraint_{i}_validation_matrix_{run}.svg')
-                files.append(path + f'/constraint_{i}_validation_dtree_{run}.svg')
-                files.append(path + f'/constraint_{i}_validation_matrix_{run}.svg')
-            else:
-                plot = constraint_viz.dtreeviz(
-                    shadow_tree, checker, constraints, coverage=True, non_applicable_counts=non_applicable_counts
-                )
-                plot.save(path + f'/constraints_validation_dtree_{run}.svg')
-                files.append(path + f'/constraints_validation_dtree_{run}.svg')
+    # Overall
+    plot = constraint_viz.dtreeviz(
+        shadow_tree, checker, constraints, coverage=True, non_applicable_counts=non_applicable_counts
+    )
+    plot.save(path + f'/constraints_validation_dtree_{run}.svg')
+    files.append(path + f'/constraints_validation_dtree_{run}.svg')
+
+    for i in constraint_num:
+        constraint = constraints[i-1]
+        c_name = constraint.name
+        plot = constraint_viz.dtreeviz(
+            shadow_tree, checker, [constraint], coverage=False, non_applicable_counts=non_applicable_counts,
+            title='Decision Tree with Validation Results for ' + c_name
+        )
+        plot.save(path + f'/constraint_{c_name}_validation_dtree_{run}.svg')
+        files.append(path + f'/constraint_{c_name}_validation_dtree_{run}.svg')
+        plot = confusion_matrix_decomposition(
+            shadow_tree, checker, constraint, non_applicable_counts=non_applicable_counts
+        )
+        plot.save(path + f'/constraint_{c_name}_validation_matrix_{run}.svg')
+        files.append(path + f'/constraint_{c_name}_validation_matrix_{run}.svg')
+
     return files
