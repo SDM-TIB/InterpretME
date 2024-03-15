@@ -1,0 +1,202 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix intr: <http://interpretme.org/vocab/> .
+
+<Run_Model>
+	rml:logicalSource [ rml:source "interpretme/files/KGE_model/model_config.csv";
+                        rml:referenceFormulation ql:CSV;
+                        ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{run_id}";
+        rr:class mls:Run
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasModel;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{run_id}_{model}";
+        ]
+    ].
+
+<ModelDetails>
+    rml:logicalSource [ rml:source "interpretme/files/KGE_model/model_config.csv";
+                        rml:referenceFormulation ql:CSV;
+                        ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{run_id}_{model}";
+        rr:class intr:KGE_Model
+    ];      
+    rr:predicateObjectMap [
+        rr:predicate intr:modelName;
+        rr:objectMap [
+            rml:reference "model";
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasEpochs;
+        rr:objectMap [
+            rml:reference "epochs";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasBatchSize;
+        rr:objectMap [
+            rml:reference "batch_size";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasLearningRate;
+        rr:objectMap [
+            rml:reference "learning_rate";
+            rr:datatype xsd:float
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasEmbeddingDimensions;
+        rr:objectMap [
+            rml:reference "dimensions";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasOptimizer;
+        rr:objectMap [
+            rml:reference "optimizer";
+            rr:datatype xsd:string
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasHitsAt10;
+        rr:objectMap [
+            rml:reference "hits_at_10";
+            rr:datatype xsd:float
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasMRR;
+        rr:objectMap [
+            rml:reference "MRR";
+            rr:datatype xsd:float
+        ]
+    ].
+
+
+<HyperparameterSetting>
+    rml:logicalSource [
+        rml:source "interpretme/files/KGE_model/model_hyperparameters.csv";
+        rml:referenceFormulation ql:CSV
+    ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{run_id}_{model}_{hyperparameters_name}";
+        rr:class intr:HyperParameter
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasHyperParameter;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{hyperparameters_name}"
+        ]
+    ];
+   rr:predicateObjectMap [
+        rr:predicate intr:modelName;
+        rr:objectMap [
+            rml:reference "model";
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasEpochs;
+        rr:objectMap [
+            rml:reference "epochs";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasBatchSize;
+        rr:objectMap [
+            rml:reference "batch_size";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasLearningRate;
+        rr:objectMap [
+            rml:reference "learning_rate";
+            rr:datatype xsd:float
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasEmbeddingDimensions;
+        rr:objectMap [
+            rml:reference "dimensions";
+            rr:datatype xsd:int
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasOptimizer;
+        rr:objectMap [
+            rml:reference "optimizer";
+            rr:datatype xsd:string
+        ]
+    ] .
+
+<PredictionTask>
+    rml:logicalSource [ rml:source "interpretme/files/KGE_model/predictionTask.csv";
+                        rml:referenceFormulation ql:CSV;
+                        ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{run_id}_{model}_{prediction}";
+        rr:class intr:PredictionTask
+    ];      
+    rr:predicateObjectMap [
+        rr:predicate intr:hasPrediction;
+        rr:objectMap [
+            rml:reference "predictionName";
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasHead;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{Head}";
+        ] ;
+      rr:predicateObjectMap [
+        rr:predicate intr:hasRelation;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{Relation}";
+        ] ;
+        rr:predicateObjectMap [
+        rr:predicate intr:hasTail;
+        rr:objectMap [
+            rr:template "http://interpretme.org/entity/{Tail}";
+        ]   
+    ].
+
+
+<PredictionTaskEvaluation>
+    rml:logicalSource [ rml:source "interpretme/files/KGE_model/predictionTaskEvaluation.csv";
+                        rml:referenceFormulation ql:CSV;
+                        ];
+    rr:subjectMap [
+        rr:template "http://interpretme.org/entity/{run_id}_{model}_{prediction}";
+        rr:class intr:PredictionTask
+    ];      
+    rr:predicateObjectMap [
+        rr:predicate intr:hasScore;
+        rr:objectMap [
+            rml:reference "Score";
+            rr:datatype xsd:float
+        ]
+    ];
+    rr:predicateObjectMap [
+        rr:predicate intr:hasRank;
+        rr:objectMap [
+            rml:reference "Rank";
+            rr:datatype xsd:int
+        ]   
+    ].
